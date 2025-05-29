@@ -1,0 +1,33 @@
+LICENÇA DE USO RESTRITO – PROJETO TCC SLPIRES.COM
+
+Este projeto, incluindo todos os seus arquivos, códigos, scripts e documentação, foi desenvolvido exclusivamente como parte do Trabalho de Conclusão de Curso (TCC) de graduação em Tecnologia em Sistemas de Computação da Universidade Federal Fluminense (UFF).
+
+É concedida permissão para leitura, análise e execução do sistema unicamente para fins acadêmicos, avaliativos e de demonstração à banca examinadora, professores, colegas de curso ou instituições de ensino relacionadas ao processo de avaliação do TCC.
+
+Fica expressamente proibida a reprodução, distribuição, modificação, publicação, comercialização ou utilização deste projeto ou de partes dele para quaisquer fins comerciais, profissionais ou não acadêmicos sem autorização prévia e expressa do autor.
+
+Qualquer citação, referência ou menção ao presente projeto em trabalhos acadêmicos, publicações, apresentações ou outros meios deve obrigatoriamente indicar o nome do autor, o título do TCC e a instituição de ensino.
+
+Todos os direitos reservados ao autor:
+Sérgio Luis de Oliveira Pires
+Ano: 2025
+
+Contato para solicitações de uso ou esclarecimentos: slpires@slpires.com
+
+---
+
+RESTRICTED USE LICENSE – TCC SLPIRES.COM PROJECT
+
+This project, including all its files, code, scripts, and documentation, was developed exclusively as part of the Undergraduate Final Project (TCC) for the Bachelor’s Degree in Computer Systems Technology at the Fluminense Federal University (UFF), Brazil.
+
+Permission is granted to read, analyze, and execute the system solely for academic, evaluation, and demonstration purposes to the examination board, professors, classmates, or educational institutions related to the TCC evaluation process.
+
+Reproduction, distribution, modification, publication, commercialization, or use of this project or any part of it for any commercial, professional, or non-academic purposes is strictly prohibited without the prior and express authorization of the author.
+
+Any citation, reference, or mention of this project in academic works, publications, presentations, or other media must obligatorily include the author’s name, the TCC title, and the educational institution.
+
+All rights reserved to the author:
+Sérgio Luis de Oliveira Pires
+Year: 2025
+
+Contact for usage requests or clarifications: slpires@slpires.com

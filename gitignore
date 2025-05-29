@@ -1,0 +1,50 @@
+# Diretórios de dependências (Composer, caso venha a utilizar futuramente)
+vendor/
+
+# Arquivos e diretórios de log
+logs/
+*.log
+
+# Arquivos de cache e temporários
+*.cache
+*.tmp
+*.swp
+*.bak
+*.old
+
+# Arquivos de configuração sensíveis e variáveis de ambiente
+.env
+config/*.local.php
+config/*.secret.php
+
+# Scripts de backup do banco de dados
+db/*.sql.bak
+db/*.backup.sql
+
+# Pastas de uploads temporários (caso use uploads no sistema)
+uploads/tmp/
+uploads/temp/
+
+# Arquivos do VS Code, Notepad++ e IDEs
+.vscode/
+*.code-workspace
+*.sublime-workspace
+*.sublime-project
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Arquivos e diretórios do XAMPP (evite versionar qualquer pasta do XAMPP)
+xampp/
+xamppfiles/
+
+# Arquivos de teste, evidências e prints temporários (caso gere durante testes)
+tests/tmp/
+docs/tmp/
+docs/prints/
+
+# Arquivos/pastas de hospedagem e FTP
+.well-known/
+.ftpquota
+.htaccess
