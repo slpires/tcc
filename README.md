@@ -1,4 +1,12 @@
-# TCC-UFF-PoC-Recuperacao-Creditos
+# tcc
+
+![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
+![GitHub](https://img.shields.io/badge/hosted%20on-GitHub-blue)
+![License](https://img.shields.io/badge/license-Propriet%C3%A1ria%20/%20Uso%20Restrito-red)
+![Tecnologia](https://img.shields.io/badge/PHP-8.2-blueviolet?logo=php)
+![Banco de Dados](https://img.shields.io/badge/MySQL-8.0-blue?logo=mysql)
+![Plataforma](https://img.shields.io/badge/Plataforma-XAMPP-orange)
+![Deploy](https://img.shields.io/badge/deploy-HostGator-blue)
 
 Protótipo web para recuperação de créditos em folha de pagamento, desenvolvido como Prova de Conceito (PoC) para o Trabalho de Conclusão de Curso (TCC) de graduação em Tecnologia em Sistemas de Computação da Universidade Federal Fluminense.
 
