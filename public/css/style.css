@@ -1,149 +1,305 @@
-body {
-    background: linear-gradient(120deg, #207544 60%, #9ddeaf 100%);
-    color: #fff;
-    font-family: 'Segoe UI', Arial, sans-serif;
-    margin: 0;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-.container {
-    background: rgba(0,50,20,0.12);
-    border-radius: 18px;
-    box-shadow: 0 4px 32px rgba(0,60,30,0.19);
-    max-width: 900px; /* Aumentado para comportar o subtítulo */
-    padding: 38px 30px;
-    text-align: center;
-}
-.logo {
-    font-family: Tahoma, Arial, sans-serif;
-    font-weight: bold;
-    font-size: 2.1rem;
-    letter-spacing: 2px;
-    margin-bottom: 8px;
-    color: #ecffe6;
-    text-shadow: 0 1px 8px rgba(32,117,68,0.15);
-}
-.status {
-    display: inline-block;
-    background: #55cc7a;
-    color: #11592d;
-    font-weight: 600;
-    border-radius: 16px;
-    padding: 4px 16px;
-    margin-bottom: 16px;
-    font-size: 1.03rem;
-    box-shadow: 0 2px 4px rgba(17,89,45,0.08);
-}
-.tcc-title {
-    margin: 24px 0 24px 0;
-    text-align: center;
-    max-width: 900px;  /* Mesmo valor do container */
-    margin-left: auto;
-    margin-right: auto;
-    color: #e4ffe6;
-    font-family: Tahoma, Arial, sans-serif;
-}
-.titulo-bloco1 {
-    font-size: 1.08rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    line-height: 1.34;
-    letter-spacing: 0.2px;
-    margin-bottom: 0;
-    display: block;
-}
-.titulo-espaco {
-    height: 16px; /* Espaço controlado */
-}
-.titulo-bloco2 {
-    font-size: 1.06rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.1px;
-    line-height: 1.2;
-    color: #d6ffe6;
-    display: block;
-    text-align: center;
-    white-space: nowrap;    /* Sempre uma linha */
-    overflow: hidden;
-    text-overflow: ellipsis;
-    margin-left: auto;
-    margin-right: auto;
-    padding: 0 12px;
-    max-width: 100%;
-}
-@media (max-width: 900px) {
-    .container,
-    .tcc-title {
-        max-width: 99vw;
-        padding-left: 2vw;
-        padding-right: 2vw;
-    }
-    .titulo-bloco1, .titulo-bloco2 {
-        font-size: 0.98rem;
-    }
-}
-@media (max-width: 600px) {
-    .titulo-bloco2 {
-        font-size: 0.86rem;
-        padding: 0 1vw;
-    }
-}
-@media (max-width: 400px) {
-    .tcc-title {
-        font-size: 0.80rem;
-    }
-    .titulo-bloco1, .titulo-bloco2 {
-        font-size: 0.80rem;
-    }
-}
-
-p {
-    font-size: 1.08rem;
-    margin: 8px 0 24px 0;
-    color: #eaffea;
-}
-.credit {
-    font-size: 0.92rem;
-    color: #d6ffe6;
-    margin-top: 20px;
-}
-.github {
-    color: #fff;
-    background: #207544;
-    border-radius: 8px;
-    padding: 6px 16px;
-    text-decoration: none;
-    font-weight: 600;
-    margin-top: 16px;
-    display: inline-block;
-    transition: background .2s, color .2s;
-    border: 2px solid #88e7ae;
-}
-.github:hover {
-    background: #9ddeaf;
-    color: #207544;
-    border-color: #207544;
-}
-.footer-version {
-    margin-top: 20px;
-    font-size: 0.91rem;
-    color: #e0ffe9;
-    background: none;
-}
-.footer-version a {
-    color: #d0ffcb;
-    text-decoration: underline;
-    transition: color .2s;
-}
-.footer-version a[href*="olink.ai"] {
-    color: #ffe99d;
-    font-weight: bold;
-    text-decoration: underline dotted;
-}
-.footer-version a[href*="olink.ai"]:hover,
-.footer-version a:hover {
-    color: #218d41;
-}
+body {
+
+    background: linear-gradient(120deg, #207544 60%, #9ddeaf 100%);
+
+    color: #fff;
+
+    font-family: 'Segoe UI', Arial, sans-serif;
+
+    margin: 0;
+
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+.container {
+
+    background: rgba(0,50,20,0.12);
+
+    border-radius: 18px;
+
+    box-shadow: 0 4px 32px rgba(0,60,30,0.19);
+
+    max-width: 900px; /* Aumentado para comportar o subtítulo */
+
+    padding: 38px 30px;
+
+    text-align: center;
+
+}
+
+.logo {
+
+    font-family: Tahoma, Arial, sans-serif;
+
+    font-weight: bold;
+
+    font-size: 2.1rem;
+
+    letter-spacing: 2px;
+
+    margin-bottom: 8px;
+
+    color: #ecffe6;
+
+    text-shadow: 0 1px 8px rgba(32,117,68,0.15);
+
+}
+
+.status {
+
+    display: inline-block;
+
+    background: #55cc7a;
+
+    color: #11592d;
+
+    font-weight: 600;
+
+    border-radius: 16px;
+
+    padding: 4px 16px;
+
+    margin-bottom: 16px;
+
+    font-size: 1.03rem;
+
+    box-shadow: 0 2px 4px rgba(17,89,45,0.08);
+
+}
+
+.tcc-title {
+
+    margin: 24px 0 24px 0;
+
+    text-align: center;
+
+    max-width: 900px;  /* Mesmo valor do container */
+
+    margin-left: auto;
+
+    margin-right: auto;
+
+    color: #e4ffe6;
+
+    font-family: Tahoma, Arial, sans-serif;
+
+}
+
+.titulo-bloco1 {
+
+    font-size: 1.08rem;
+
+    font-weight: bold;
+
+    text-transform: uppercase;
+
+    line-height: 1.34;
+
+    letter-spacing: 0.2px;
+
+    margin-bottom: 0;
+
+    display: block;
+
+}
+
+.titulo-espaco {
+
+    height: 16px; /* Espaço controlado */
+
+}
+
+.titulo-bloco2 {
+
+    font-size: 1.06rem;
+
+    font-weight: bold;
+
+    text-transform: uppercase;
+
+    letter-spacing: 0.1px;
+
+    line-height: 1.2;
+
+    color: #d6ffe6;
+
+    display: block;
+
+    text-align: center;
+
+    white-space: nowrap;    /* Sempre uma linha */
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    margin-left: auto;
+
+    margin-right: auto;
+
+    padding: 0 12px;
+
+    max-width: 100%;
+
+}
+
+@media (max-width: 900px) {
+
+    .container,
+
+    .tcc-title {
+
+        max-width: 99vw;
+
+        padding-left: 2vw;
+
+        padding-right: 2vw;
+
+    }
+
+    .titulo-bloco1, .titulo-bloco2 {
+
+        font-size: 0.98rem;
+
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    .titulo-bloco2 {
+
+        font-size: 0.86rem;
+
+        padding: 0 1vw;
+
+    }
+
+}
+
+@media (max-width: 400px) {
+
+    .tcc-title {
+
+        font-size: 0.80rem;
+
+    }
+
+    .titulo-bloco1, .titulo-bloco2 {
+
+        font-size: 0.80rem;
+
+    }
+
+}
+
+
+
+p {
+
+    font-size: 1.08rem;
+
+    margin: 8px 0 24px 0;
+
+    color: #eaffea;
+
+}
+
+.credit {
+
+    font-size: 0.92rem;
+
+    color: #d6ffe6;
+
+    margin-top: 20px;
+
+}
+
+.github {
+
+    color: #fff;
+
+    background: #207544;
+
+    border-radius: 8px;
+
+    padding: 6px 16px;
+
+    text-decoration: none;
+
+    font-weight: 600;
+
+    margin-top: 16px;
+
+    display: inline-block;
+
+    transition: background .2s, color .2s;
+
+    border: 2px solid #88e7ae;
+
+}
+
+.github:hover {
+
+    background: #9ddeaf;
+
+    color: #207544;
+
+    border-color: #207544;
+
+}
+
+.footer-version {
+
+    margin-top: 20px;
+
+    font-size: 0.91rem;
+
+    color: #e0ffe9;
+
+    background: none;
+
+}
+
+.footer-version a {
+
+    color: #d0ffcb;
+
+    text-decoration: underline;
+
+    transition: color .2s;
+
+}
+
+.footer-version a[href*="olink.ai"] {
+
+    color: #ffe99d;
+
+    font-weight: bold;
+
+    text-decoration: underline dotted;
+
+}
+
+.footer-version a[href*="olink.ai"]:hover,
+
+.footer-version a:hover {
+
+    color: #218d41;
+
+}
+
+.github-group {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+}
