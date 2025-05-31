@@ -20,13 +20,17 @@
 /* =========================
    ESTILOS GERAIS DE TEXTO
    ========================= */
-body {
-  font-family: 'Segoe UI', 'Open Sans', Arial, Helvetica, sans-serif;
-  font-size: 16px;
-  color: var(--cinza-escuro);
+html, body {
+  width: 100vw;
+  min-width: 0;
+  overflow-x: hidden;
   margin: 0;
   padding: 0;
   min-height: 100vh;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', 'Open Sans', Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  color: var(--cinza-escuro);
   background: var(--branco);
 }
 
@@ -38,15 +42,19 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100vw;
+  overflow-x: hidden;
 }
 .home-container {
   background: var(--translucido-home);
   border-radius: 18px;
   box-shadow: 0 4px 32px rgba(0,60,30,0.19);
+  width: 98vw;
   max-width: 900px;
   padding: 38px 30px;
   text-align: center;
   margin: 32px auto;
+  box-sizing: border-box;
 }
 .logo {
   font-family: Tahoma, Arial, sans-serif;
@@ -132,6 +140,8 @@ body {
   gap: 1rem;
   margin-top: 1.5rem;
   margin-bottom: 0;
+  width: 100%;
+  box-sizing: border-box;
 }
 .github {
   color: #fff;
@@ -141,12 +151,17 @@ body {
   text-decoration: none;
   font-weight: 600;
   margin-top: 16px;
-  display: inline-block;
+  display: block;
   transition: all 0.2s ease-in-out;
   border: 2px solid #88e7ae;
-  min-width: 210px;
+  min-width: 120px;
+  width: 100%;
+  max-width: 370px;
   text-align: center;
   font-size: 1.03em;
+  box-sizing: border-box;
+  margin-left: auto;
+  margin-right: auto;
 }
 .github:hover, .github:focus-visible {
   background: #9ddeaf;
@@ -165,6 +180,13 @@ body {
   margin-top: 8px;
   box-shadow: 0 3px 20px rgba(44,60,30,0.15);
   transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+  width: 100%;
+  max-width: 370px;
+  min-width: 120px;
+  box-sizing: border-box;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }
 .btn-mvp:hover, .btn-mvp:focus-visible {
   background: #218d41 !important;
@@ -176,7 +198,7 @@ body {
 @media (max-width: 500px) {
   .github-group { flex-direction: column; align-items: center; gap: 0.6rem;}
   .logo { font-size: 1.7rem; }
-  .github { width: 90%; text-align: center; }
+  .github, .btn-mvp { font-size: 0.95rem; padding: 0.72rem 0.8rem; max-width: 99vw; }
   .logo-inst { height: 32px; padding: 4px 8px; }
   .footer-institucional { gap: 16px; }
 }
@@ -191,12 +213,14 @@ body {
    ============================== */
 
 /* Centralização vertical plena na tela do sistema */
-body.sistema-bg {
+.sistema-bg {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
   background: var(--branco);
+  width: 100vw;
+  overflow-x: hidden;
 }
 
 /* Caixa principal do app */
@@ -212,6 +236,7 @@ body.sistema-bg {
   display: flex;
   flex-direction: column;
   align-items: center;
+  box-sizing: border-box;
 }
 
 /* Logo, título, descrição */
@@ -243,6 +268,7 @@ body.sistema-bg {
   gap: 14px;
   width: 100%;
   align-items: center;
+  box-sizing: border-box;
 }
 .app-btn {
   background: var(--verde-base);
@@ -254,13 +280,15 @@ body.sistema-bg {
   font-weight: 700;
   cursor: not-allowed;
   opacity: 0.75;
-  width: 85%;
+  width: 100%;
   max-width: 370px;
+  min-width: 120px;
   margin: 0 auto;
   box-shadow: 0 1px 4px #45763f12;
   transition: background 0.18s, color 0.18s, opacity 0.18s;
   outline: none;
   text-align: center;
+  box-sizing: border-box;
 }
 .app-btn:active,
 .app-btn:focus-visible {
@@ -279,7 +307,8 @@ body.sistema-bg {
   }
   .app-logo { font-size: 1.35rem; }
   .app-title { font-size: 1rem; }
-  .app-btn { font-size: 0.99rem; padding: 0.72rem 0.8rem; }
+  .app-btn { font-size: 0.99rem; padding: 0.72rem 0.8rem; max-width: 99vw; }
+  .app-btn-group { gap: 0.6rem; }
 }
 
 /* Cabeçalho e rodapé institucionais */
@@ -307,6 +336,12 @@ header, footer {
   cursor: pointer;
   font-weight: bold;
   transition: background 0.2s;
+  width: 100%;
+  max-width: 370px;
+  min-width: 120px;
+  box-sizing: border-box;
+  display: block;
+  margin: 0.3rem auto;
 }
 .btn:hover { background-color: var(--verde-escuro); }
 .btn-secundario {
