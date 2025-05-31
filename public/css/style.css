@@ -1,28 +1,41 @@
-/* ============ RESET UNIVERSAL ============ */
+/* ============================================================================
+   RESET UNIVERSAL
+   ============================================================================
+   Garante previsibilidade nos espaçamentos e tamanhos de todos os elementos,
+   incluindo pseudo-elementos, ao definir box-sizing como border-box.
+============================================================================ */
 *, *::before, *::after {
   box-sizing: border-box;
 }
 
-/* ===============================
+/* ============================================================================
    PALETA DE CORES – SLPIRES.COM
-   =============================== */
+   ============================================================================
+   Define as cores institucionais e variações utilizadas em toda a identidade
+   visual do sistema, facilitando a manutenção e padronização do layout.
+============================================================================ */
 :root {
-  --verde-base:         #45763f;
-  --contraste-suave:    #3e7453;
-  --verde-escuro:       #3d6737;
-  --verde-medio:        #497844;
-  --verde-neutro:       #688863;
-  --verde-suave:        #547b4e;
-  --branco:             #ffffff;
-  --cinza-claro:        #f4f4f4;
-  --cinza-medio:        #cccccc;
-  --cinza-escuro:       #444444;
-  --preto:              #000000;
+  --verde-base:         #45763f;     /* Verde institucional principal */
+  --contraste-suave:    #3e7453;     /* Verde para áreas de destaque discreto */
+  --verde-escuro:       #3d6737;     /* Verde para textos/títulos importantes */
+  --verde-medio:        #497844;     /* Variação para botões e barras */
+  --verde-neutro:       #688863;     /* Suavização de painéis e rodapés */
+  --verde-suave:        #547b4e;     /* Fundo de alertas e hover */
+  --branco:             #ffffff;     /* Cor de fundo predominante */
+  --cinza-claro:        #f4f4f4;     /* Fundo secundário de áreas internas */
+  --cinza-medio:        #cccccc;     /* Bordas, divisores e campos */
+  --cinza-escuro:       #444444;     /* Texto principal */
+  --preto:              #000000;     /* Uso restrito a textos específicos */
   --gradiente-home:     linear-gradient(120deg, #207544 60%, #9ddeaf 100%);
-  --translucido-home:   rgba(0,50,20,0.12);
+  --translucido-home:   rgba(0,50,20,0.12); /* Sobreposição translúcida */
 }
 
-/* ============ AJUSTES GLOBAIS ============ */
+/* ============================================================================
+   AJUSTES GLOBAIS
+   ============================================================================
+   Configura padrões de largura, margens, tipografia e cor de fundo para todo o
+   sistema, assegurando responsividade, legibilidade e acessibilidade.
+============================================================================ */
 html, body {
   width: 100%;
   max-width: 100vw;
@@ -36,7 +49,13 @@ html, body {
   background: var(--branco);
 }
 
-/* ============ HOME PAGE/LANDING PAGE ============ */
+/* ============================================================================
+   HOME PAGE/LANDING PAGE
+   ============================================================================
+   Estilos exclusivos para a página inicial, com foco em apresentação visual,
+   centralização do conteúdo, uso do gradiente institucional e destaque para
+   a identidade visual do sistema.
+============================================================================ */
 .home-bg {
   background: var(--gradiente-home) !important;
   color: #fff;
@@ -60,17 +79,18 @@ html, body {
   overflow-x: hidden;
 }
 
+/* Título principal da landing page (visual institucional) */
 .tcc-title {
   text-align: center;
   margin: 28px 0 26px 0;
 }
 .tcc-title > div {
   font-weight: bold;
-  font-size: 1.18rem; /* Ajuste aqui se necessário para evitar quebra */
+  font-size: 1.18rem;
   color: #fff;
   line-height: 1.18;
   letter-spacing: 0.2px;
-  word-break: normal; /* Garante que as palavras não quebrem no meio */
+  word-break: normal;
   white-space: normal;
   margin: 0;
 }
@@ -83,6 +103,7 @@ html, body {
   }
 }
 
+/* Blocos de apresentação para descrição e credenciais */
 .apresentacao-blocos {
   display: flex;
   flex-direction: column;
@@ -90,19 +111,22 @@ html, body {
   justify-content: center;
   margin-bottom: 1.2rem;
 }
-
 .apresentacao-credenciais,
 .apresentacao-boasvindas {
   text-align: center;
   line-height: 1.4;
 }
-
 .apresentacao-boasvindas {
   font-size: 1.14rem;
   font-weight: 500;
 }
 
-/* ============ BOTÕES E GRUPOS DE BOTÕES ============ */
+/* ============================================================================
+   BOTÕES E GRUPOS DE BOTÕES
+   ============================================================================
+   Define o layout de botões, grupos de botões e microinterações para garantir
+   usabilidade, contraste, feedback visual e sobriedade conforme a diretriz 5.1.
+============================================================================ */
 .github-group, .app-btn-group {
   display: flex;
   flex-wrap: wrap;
@@ -136,6 +160,7 @@ html, body {
   margin-right: 0;
   overflow-x: hidden;
 }
+/* Microinteração: destaque suave em hover/focus (contraste e sobriedade) */
 .github:hover, .github:focus-visible, .btn-mvp:hover, .btn-mvp:focus-visible, .app-btn:hover, .app-btn:focus-visible, .btn:hover, .btn:focus-visible {
   background: #9ddeaf;
   color: #207544;
@@ -144,7 +169,7 @@ html, body {
   box-shadow: 0 0 8px rgba(32, 117, 68, 0.25);
 }
 
-/* Destaque MVP */
+/* Botão de destaque para MVP */
 .btn-mvp {
   font-size: 1.13em !important;
   background: #3e7453 !important;
@@ -154,7 +179,6 @@ html, body {
   box-shadow: 0 3px 20px rgba(44,60,30,0.15);
   transition: background 0.18s, color 0.18s, box-shadow 0.18s;
 }
-
 .btn-mvp:hover, .btn-mvp:focus-visible {
   background: linear-gradient(90deg, #3bd166 10%, #278a3d 80%) !important;
   color: #fff !important;
@@ -165,7 +189,12 @@ html, body {
   z-index: 2;
 }
 
-/* ============ RESPONSIVIDADE AVANÇADA ============ */
+/* ============================================================================
+   RESPONSIVIDADE AVANÇADA
+   ============================================================================
+   Torna todos os elementos principais responsivos, adaptando containers e
+   botões para telas menores e mantendo acessibilidade em dispositivos móveis.
+============================================================================ */
 @media (max-width: 520px) {
   .home-container, .sistema-container.app {
     max-width: 100vw;
@@ -194,8 +223,12 @@ html, body {
   }
 }
 
-/* ============ ÁREA INTERNA (PÁGINAS DO SISTEMA) ============ */
-/* ============ ÁREA INTERNA (PÁGINAS DO SISTEMA) ============ */
+/* ============================================================================
+   ÁREA INTERNA (PÁGINAS DO SISTEMA)
+   ============================================================================
+   Estilos para as páginas protegidas do sistema (após login), priorizando
+   sobriedade, contraste, organização modular e destaque institucional.
+============================================================================ */
 .sistema-bg {
   min-height: 100vh;
   width: 100vw;
@@ -205,7 +238,6 @@ html, body {
   justify-content: center;
   overflow-x: hidden;
 }
-
 .sistema-container.app {
   max-width: 430px;
   width: 100%;
@@ -220,7 +252,7 @@ html, body {
   align-items: center;
 }
 
-/* Logo institucional com sobriedade e destaque */
+/* Logo institucional: sobriedade e destaque discreto */
 .app-logo {
   font-size: 1.65em;
   font-weight: 700;
@@ -230,7 +262,7 @@ html, body {
   text-align: center;
 }
 
-/* Título */
+/* Título das páginas internas */
 .app-title {
   font-size: 1.09em;
   font-weight: 500;
@@ -244,7 +276,7 @@ html, body {
 .app-desc {
   color: var(--cinza-escuro);
   font-size: 1.01em;
-  margin-bottom: 0px;     /* diminui o espaço após o texto */
+  margin-bottom: 0px;
   font-weight: 400;
   line-height: 1.5;
   text-align: center;
@@ -252,18 +284,18 @@ html, body {
 .app-info {
   color: var(--verde-neutro);
   font-size: 0.97em;
-  margin-top: 0px;        /* remove margem extra acima do aviso */
+  margin-top: 0px;
   display: block;
 }
 
-/* Grupo de botões */
+/* Grupo de botões internos */
 .app-btn-group {
   display: flex;
   flex-direction: column;
   width: 100%;
   gap: 11px;
-  margin-top: 18px;     /* adiciona espaço acima */
-  margin-bottom: 18px;  /* mantém espaço abaixo */
+  margin-top: 18px;
+  margin-bottom: 18px;
 }
 .app-btn {
   background: var(--cinza-medio);
@@ -301,7 +333,7 @@ html, body {
   background: none;
 }
 
-/* Responsividade */
+/* Responsividade das páginas internas */
 @media (max-width: 520px) {
   .sistema-container.app {
     padding: 16px 4vw 12px 4vw;
@@ -319,7 +351,12 @@ html, body {
   }
 }
 
-/* ============ FORMULÁRIOS, TABELAS E DEMAIS ELEMENTOS ============ */
+/* ============================================================================
+   FORMULÁRIOS, TABELAS E DEMAIS ELEMENTOS
+   ============================================================================
+   Padronização de campos de entrada, tabelas e áreas de dados para máxima
+   acessibilidade, contraste e integração visual, conforme diretrizes do projeto.
+============================================================================ */
 input, select, textarea {
   border: 1px solid var(--cinza-medio);
   padding: 0.5rem;
@@ -350,7 +387,12 @@ table td {
   border-bottom: 1px solid var(--cinza-claro);
 }
 
-/* ============ ALERTAS, FOOTER, LOGOS, ETC ============ */
+/* ============================================================================
+   ALERTAS, FOOTER, LOGOS, ETC
+   ============================================================================
+   Estilos auxiliares para feedback de sucesso, rodapés de agradecimento,
+   exibição de logos institucionais, seguindo o padrão de sobriedade visual.
+============================================================================ */
 .alert-sucesso {
   background-color: var(--verde-suave);
   color: var(--branco);
@@ -359,6 +401,7 @@ table td {
   margin-bottom: 1rem;
 }
 
+/* Rodapé de agradecimento institucional */
 .footer-agradecimentos {
   text-align: center;
   margin: 36px 0 14px 0;
@@ -399,7 +442,6 @@ table td {
     padding: 4px 8px;
   }
 }
-
 .footer-version a {
   color: #b5ffb5;
   text-decoration: none;
@@ -407,7 +449,6 @@ table td {
   transition: color 0.16s, filter 0.16s;
   filter: brightness(1.04);
 }
-
 .footer-version a:hover,
 .footer-version a:focus-visible {
   color: #e6ff72;
@@ -416,7 +457,12 @@ table td {
   outline: none;
 }
 
-/* ============ LINKS E TEXTO AUXILIAR ============ */
+/* ============================================================================
+   LINKS E TEXTO AUXILIAR
+   ============================================================================
+   Padroniza links auxiliares, como o currículo Lattes, com microinteração
+   visual ao passar o mouse, sem comprometer a sobriedade.
+============================================================================ */
 .lattes-link {
   display: inline-block;
   vertical-align: middle;
@@ -433,8 +479,12 @@ table td {
   transform: scale(1.12) rotate(-5deg);
 }
 
-
-/* Garante que não haja rolagem vertical indesejada apenas nas PÁGINAS INTERNAS */
+/* ============================================================================
+   CONTROLE DE ROLAGEM DAS PÁGINAS INTERNAS
+   ============================================================================
+   Garante rolagem vertical apenas nas áreas internas, evitando interferência
+   na experiência visual da landing page.
+============================================================================ */
 .sistema-bg {
   min-height: 100vh;
   height: 100vh;
@@ -443,11 +493,9 @@ table td {
   margin: 0;
   padding: 0;
 }
-
 @media (max-width: 520px) {
   .sistema-bg {
     height: 100svh;
     min-height: 100svh;
   }
 }
-
