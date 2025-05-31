@@ -1,3 +1,8 @@
+/* ============ RESET UNIVERSAL ============ */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
 /* ===============================
    PALETA DE CORES – SLPIRES.COM
    =============================== */
@@ -17,341 +22,304 @@
   --translucido-home:   rgba(0,50,20,0.12);
 }
 
-/* =========================
-   ESTILOS GERAIS DE TEXTO
-   ========================= */
+/* ============ AJUSTES GLOBAIS ============ */
 html, body {
-  width: 100vw;
-  min-width: 0;
+  width: 100%;
+  max-width: 100vw;
   overflow-x: hidden;
   margin: 0;
   padding: 0;
   min-height: 100vh;
-  box-sizing: border-box;
   font-family: 'Segoe UI', 'Open Sans', Arial, Helvetica, sans-serif;
   font-size: 16px;
   color: var(--cinza-escuro);
   background: var(--branco);
 }
 
-/* ===== HOME PAGE/LANDING PAGE ===== */
+/* ============ HOME PAGE/LANDING PAGE ============ */
 .home-bg {
   background: var(--gradiente-home) !important;
   color: #fff;
   min-height: 100vh;
+  width: 100vw;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100vw;
   overflow-x: hidden;
 }
 .home-container {
   background: var(--translucido-home);
   border-radius: 18px;
   box-shadow: 0 4px 32px rgba(0,60,30,0.19);
-  width: 98vw;
+  width: 100%;
   max-width: 900px;
   padding: 38px 30px;
   text-align: center;
   margin: 32px auto;
   box-sizing: border-box;
+  overflow-x: hidden;
 }
-.logo {
-  font-family: Tahoma, Arial, sans-serif;
-  font-weight: bold;
-  font-size: 2.1rem;
-  letter-spacing: 2px;
-  margin-bottom: 8px;
-  color: #ecffe6;
-  text-shadow: 0 1px 8px rgba(32,117,68,0.15);
-}
-.status {
-  display: inline-block;
-  background: #55cc7a;
-  color: #11592d;
-  font-weight: 600;
-  border-radius: 16px;
-  padding: 4px 16px;
-  margin-bottom: 16px;
-  font-size: 1.03rem;
-  box-shadow: 0 2px 4px rgba(17,89,45,0.08);
-}
-.tcc-title {
-  margin: 24px 0 24px 0;
-  text-align: center;
-  max-width: 900px;
-  margin-left: auto;
-  margin-right: auto;
-  color: #e4ffe6;
-  font-family: Tahoma, Arial, sans-serif;
-}
-.titulo-bloco1 {
-  font-size: 1.08rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  line-height: 1.34;
-  letter-spacing: 0.2px;
-  margin-bottom: 0;
-  display: block;
-}
-.titulo-espaco { height: 16px; }
-.titulo-bloco2 {
-  font-size: 1.06rem;
-  font-weight: bold;
-  text-transform: uppercase;
-  letter-spacing: 0.1px;
-  line-height: 1.2;
-  color: #d6ffe6;
-  display: block;
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 0 12px;
-  max-width: 100%;
-  margin-top: 16px; /* Espaçamento entre blocos do título */
-}
-@media (max-width: 900px) {
-  .home-container, .tcc-title { max-width: 99vw; padding-left: 2vw; padding-right: 2vw; }
-  .titulo-bloco1, .titulo-bloco2 { font-size: 0.98rem; }
-}
-@media (max-width: 600px) {
-  .titulo-bloco2 { font-size: 0.86rem; padding: 0 1vw; }
-}
-@media (max-width: 400px) {
-  .tcc-title { font-size: 0.80rem; }
-  .titulo-bloco1, .titulo-bloco2 { font-size: 0.80rem; }
-}
-.home-container p,
-.home-container .credit { color: #eaffea; }
-.home-container .credit { font-size: 0.92rem; margin-top: 20px; color: #d6ffe6; }
-.footer-version { margin-top: 20px; font-size: 0.91rem; color: #e0ffe9; background: none; }
-.footer-version a { color: #d0ffcb; text-decoration: underline; transition: color .2s; }
-.footer-version a[href*="olink.ai"] { color: #ffe99d; font-weight: bold; text-decoration: underline dotted; }
-.footer-version a[href*="olink.ai"]:hover, .footer-version a:hover { color: #218d41; }
 
-/* Botões destacados para homepage */
-.github-group {
+.tcc-title {
+  text-align: center;
+  margin: 28px 0 26px 0;
+}
+.tcc-title > div {
+  font-weight: bold;
+  font-size: 1.18rem; /* Ajuste aqui se necessário para evitar quebra */
+  color: #fff;
+  line-height: 1.18;
+  letter-spacing: 0.2px;
+  word-break: normal; /* Garante que as palavras não quebrem no meio */
+  white-space: normal;
+  margin: 0;
+}
+.tcc-title > div:nth-child(3) {
+  height: 0.8em;
+}
+@media (max-width: 700px) {
+  .tcc-title > div {
+    font-size: 1.03rem;
+  }
+}
+
+.apresentacao-blocos {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1.2rem;
+}
+
+.apresentacao-credenciais,
+.apresentacao-boasvindas {
+  text-align: center;
+  line-height: 1.4;
+}
+
+.apresentacao-boasvindas {
+  font-size: 1.14rem;
+  font-weight: 500;
+}
+
+/* ============ BOTÕES E GRUPOS DE BOTÕES ============ */
+.github-group, .app-btn-group {
   display: flex;
   flex-wrap: wrap;
+  flex-direction: row;
   justify-content: center;
   gap: 1rem;
   margin-top: 1.5rem;
   margin-bottom: 0;
   width: 100%;
   box-sizing: border-box;
+  padding-left: 0;
+  padding-right: 0;
 }
-.github {
+.github, .btn-mvp, .app-btn, .btn {
   color: #fff;
   background: #207544;
   border-radius: 8px;
-  padding: 6px 16px;
+  padding: 12px 18px;
   text-decoration: none;
   font-weight: 600;
   margin-top: 16px;
   display: block;
-  transition: all 0.2s ease-in-out;
   border: 2px solid #88e7ae;
-  min-width: 120px;
+  min-width: 0;
   width: 100%;
-  max-width: 370px;
+  max-width: 100%;
   text-align: center;
   font-size: 1.03em;
   box-sizing: border-box;
-  margin-left: auto;
-  margin-right: auto;
+  margin-left: 0;
+  margin-right: 0;
+  overflow-x: hidden;
 }
-.github:hover, .github:focus-visible {
+.github:hover, .github:focus-visible, .btn-mvp:hover, .btn-mvp:focus-visible, .app-btn:hover, .app-btn:focus-visible, .btn:hover, .btn:focus-visible {
   background: #9ddeaf;
   color: #207544;
   border-color: #207544;
   transform: scale(1.03);
   box-shadow: 0 0 8px rgba(32, 117, 68, 0.25);
 }
-/* Destaque do botão MVP */
+
+/* Destaque MVP */
 .btn-mvp {
   font-size: 1.13em !important;
   background: #3e7453 !important;
   border-color: #f6ffde !important;
-  padding: 12px 30px !important;
   color: #fff !important;
   margin-top: 8px;
   box-shadow: 0 3px 20px rgba(44,60,30,0.15);
   transition: background 0.18s, color 0.18s, box-shadow 0.18s;
-  width: 100%;
-  max-width: 370px;
-  min-width: 120px;
-  box-sizing: border-box;
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
 }
+
 .btn-mvp:hover, .btn-mvp:focus-visible {
-  background: #218d41 !important;
+  background: linear-gradient(90deg, #3bd166 10%, #278a3d 80%) !important;
   color: #fff !important;
-  box-shadow: 0 7px 32px #88e7ae6e;
+  border-color: #e6ff72 !important;
+  box-shadow: 0 0 18px 3px #b7ff9a, 0 0 0 4px #20754422;
+  transform: scale(1.06);
+  transition: background 0.22s, color 0.18s, box-shadow 0.22s, transform 0.16s;
+  z-index: 2;
 }
 
-/* Responsividade botões home */
-@media (max-width: 500px) {
-  .github-group { flex-direction: column; align-items: center; gap: 0.6rem;}
-  .logo { font-size: 1.7rem; }
-  .github, .btn-mvp { font-size: 0.95rem; padding: 0.72rem 0.8rem; max-width: 99vw; }
-  .logo-inst { height: 32px; padding: 4px 8px; }
-  .footer-institucional { gap: 16px; }
+/* ============ RESPONSIVIDADE AVANÇADA ============ */
+@media (max-width: 520px) {
+  .home-container, .sistema-container.app {
+    max-width: 100vw;
+    width: 100vw;
+    padding-left: 2vw;
+    padding-right: 2vw;
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .github-group, .app-btn-group {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+    width: 100%;
+    padding-left: 0;
+    padding-right: 0;
+  }
+  .github, .btn-mvp, .app-btn, .btn {
+    max-width: 100vw;
+    font-size: 0.95rem;
+    padding-left: 0.8rem;
+    padding-right: 0.8rem;
+    min-width: 0;
+    margin-left: 0;
+    margin-right: 0;
+  }
 }
 
-/* Ajustes visuais adicionais home */
-.tcc-title { margin-bottom: 32px; }
-.home-container .credit { margin-top: 32px; }
-.footer-version { margin-top: 28px; }
-
-/* ==============================
-   ÁREA INTERNA (PÁGINAS DO SISTEMA)
-   ============================== */
-
-/* Centralização vertical plena na tela do sistema */
+/* ============ ÁREA INTERNA (PÁGINAS DO SISTEMA) ============ */
+/* ============ ÁREA INTERNA (PÁGINAS DO SISTEMA) ============ */
 .sistema-bg {
   min-height: 100vh;
+  width: 100vw;
+  background: var(--cinza-claro);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--branco);
-  width: 100vw;
   overflow-x: hidden;
 }
 
-/* Caixa principal do app */
 .sistema-container.app {
-  max-width: 410px;
-  width: 98vw;
+  max-width: 430px;
+  width: 100%;
+  background: var(--branco);
+  border-bottom: 2px solid var(--verde-neutro);
+  border-radius: 10px;
+  box-shadow: none;
+  padding: 32px 20px 18px 20px;
   margin: 0 auto;
-  text-align: center;
-  background: var(--cinza-claro);
-  padding: 38px 24px 34px 24px;
-  border-radius: 16px;
-  box-shadow: 0 2px 20px rgba(44,60,30,0.12);
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-sizing: border-box;
 }
 
-/* Logo, título, descrição */
+/* Logo institucional com sobriedade e destaque */
 .app-logo {
-  font-family: Tahoma, Arial, sans-serif;
-  font-weight: bold;
-  font-size: 2.08rem;
+  font-size: 1.65em;
+  font-weight: 700;
   color: var(--verde-base);
-  margin-bottom: 6px;
-  letter-spacing: 2px;
+  margin-bottom: 14px;
+  letter-spacing: 2.2px;
+  text-align: center;
 }
+
+/* Título */
 .app-title {
-  font-size: 1.13rem;
-  font-weight: 600;
-  color: var(--verde-escuro);
-  margin-bottom: 12px;
-  margin-top: 4px;
+  font-size: 1.09em;
+  font-weight: 500;
+  color: var(--verde-base);
+  margin-bottom: 9px;
+  letter-spacing: 0.1px;
+  text-align: center;
 }
+
+/* Descrição e instrução */
 .app-desc {
   color: var(--cinza-escuro);
-  font-size: 1.04rem;
-  margin-bottom: 25px;
+  font-size: 1.01em;
+  margin-bottom: 0px;     /* diminui o espaço após o texto */
+  font-weight: 400;
+  line-height: 1.5;
+  text-align: center;
+}
+.app-info {
+  color: var(--verde-neutro);
+  font-size: 0.97em;
+  margin-top: 0px;        /* remove margem extra acima do aviso */
+  display: block;
 }
 
-/* Grupo de botões e botões */
+/* Grupo de botões */
 .app-btn-group {
   display: flex;
   flex-direction: column;
-  gap: 14px;
   width: 100%;
-  align-items: center;
-  box-sizing: border-box;
+  gap: 11px;
+  margin-top: 18px;     /* adiciona espaço acima */
+  margin-bottom: 18px;  /* mantém espaço abaixo */
 }
 .app-btn {
-  background: var(--verde-base);
-  color: #fff;
-  border: none;
+  background: var(--cinza-medio);
+  color: var(--cinza-escuro);
   border-radius: 6px;
-  padding: 0.92rem 1.1rem;
-  font-size: 1.09rem;
-  font-weight: 700;
+  padding: 13px 0;
+  font-size: 1em;
+  border: none;
   cursor: not-allowed;
-  opacity: 0.75;
-  width: 100%;
-  max-width: 370px;
-  min-width: 120px;
-  margin: 0 auto;
-  box-shadow: 0 1px 4px #45763f12;
-  transition: background 0.18s, color 0.18s, opacity 0.18s;
-  outline: none;
-  text-align: center;
-  box-sizing: border-box;
+  opacity: 0.68;
+  transition: background 0.14s, color 0.14s;
+  font-weight: 600;
+  letter-spacing: 0.5px;
 }
-.app-btn:active,
-.app-btn:focus-visible {
-  outline: 2px solid var(--verde-escuro);
+.app-btn:enabled {
+  background: var(--verde-suave);
+  color: var(--branco);
+  cursor: pointer;
   opacity: 1;
 }
-.app-btn:hover {
-  opacity: 0.85;
+.app-btn:enabled:hover, .app-btn:enabled:focus-visible {
+  background: var(--verde-neutro);
+  color: var(--branco);
 }
 
-/* Responsividade app */
+/* Rodapé institucional sóbrio */
+.app-footer {
+  margin-top: 10px;
+  font-size: 0.93em;
+  color: var(--cinza-escuro);
+  text-align: center;
+  font-weight: 400;
+  border: none;
+  padding: 0;
+  background: none;
+}
+
+/* Responsividade */
 @media (max-width: 520px) {
   .sistema-container.app {
-    max-width: 99vw;
-    padding: 18px 2vw 20px 2vw;
+    padding: 16px 4vw 12px 4vw;
+    max-width: 98vw;
   }
-  .app-logo { font-size: 1.35rem; }
-  .app-title { font-size: 1rem; }
-  .app-btn { font-size: 0.99rem; padding: 0.72rem 0.8rem; max-width: 99vw; }
-  .app-btn-group { gap: 0.6rem; }
+  .app-logo, .app-title, .app-desc {
+    font-size: 0.98em;
+  }
+  .app-btn {
+    font-size: 0.99em;
+    padding: 11px 0;
+  }
+  .app-footer {
+    font-size: 0.89em;
+  }
 }
 
-/* Cabeçalho e rodapé institucionais */
-header, footer {
-  background-color: var(--verde-escuro);
-  color: var(--branco);
-  text-align: center;
-  padding: 1rem 0;
-}
-
-/* Containers e seções sóbrias */
-.section {
-  padding: 2rem;
-  background-color: var(--cinza-claro);
-  border-bottom: 1px solid var(--cinza-medio);
-}
-
-/* Botões padrão do sistema */
-.btn {
-  background-color: var(--verde-base);
-  color: var(--branco);
-  padding: 0.6rem 1.2rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background 0.2s;
-  width: 100%;
-  max-width: 370px;
-  min-width: 120px;
-  box-sizing: border-box;
-  display: block;
-  margin: 0.3rem auto;
-}
-.btn:hover { background-color: var(--verde-escuro); }
-.btn-secundario {
-  background-color: var(--contraste-suave);
-  color: var(--branco);
-  transition: background 0.2s;
-}
-.btn-secundario:hover { background-color: var(--verde-medio); }
-
-/* Formulários */
+/* ============ FORMULÁRIOS, TABELAS E DEMAIS ELEMENTOS ============ */
 input, select, textarea {
   border: 1px solid var(--cinza-medio);
   padding: 0.5rem;
@@ -365,7 +333,6 @@ input:focus, select:focus, textarea:focus {
   outline: none;
 }
 
-/* Tabelas */
 table {
   width: 100%;
   border-collapse: collapse;
@@ -383,7 +350,7 @@ table td {
   border-bottom: 1px solid var(--cinza-claro);
 }
 
-/* Alertas */
+/* ============ ALERTAS, FOOTER, LOGOS, ETC ============ */
 .alert-sucesso {
   background-color: var(--verde-suave);
   color: var(--branco);
@@ -392,9 +359,6 @@ table td {
   margin-bottom: 1rem;
 }
 
-/* =========================
-   FOOTER INSTITUCIONAL E LOGOS
-   ========================= */
 .footer-agradecimentos {
   text-align: center;
   margin: 36px 0 14px 0;
@@ -436,6 +400,23 @@ table td {
   }
 }
 
+.footer-version a {
+  color: #b5ffb5;
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.16s, filter 0.16s;
+  filter: brightness(1.04);
+}
+
+.footer-version a:hover,
+.footer-version a:focus-visible {
+  color: #e6ff72;
+  filter: brightness(1.15);
+  text-decoration: none;
+  outline: none;
+}
+
+/* ============ LINKS E TEXTO AUXILIAR ============ */
 .lattes-link {
   display: inline-block;
   vertical-align: middle;
@@ -451,3 +432,22 @@ table td {
   color: #3d6737;
   transform: scale(1.12) rotate(-5deg);
 }
+
+
+/* Garante que não haja rolagem vertical indesejada apenas nas PÁGINAS INTERNAS */
+.sistema-bg {
+  min-height: 100vh;
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  margin: 0;
+  padding: 0;
+}
+
+@media (max-width: 520px) {
+  .sistema-bg {
+    height: 100svh;
+    min-height: 100svh;
+  }
+}
+
