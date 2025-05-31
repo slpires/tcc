@@ -2,68 +2,128 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
-  <title>Prova de Conceito – TCC UFF | Slpires.COM</title>
+  <title>SLPIRES.COM – Sistema de Recuperação de Créditos | TCC UFF</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Protótipo acadêmico desenvolvido para Trabalho de Conclusão de Curso (TCC) do curso de Tecnologia em Sistemas de Computação - UFF">
+  <meta name="description" content="Homepage oficial do TCC SLPIRES.COM: controle acadêmico, documentação, acesso ao sistema e acompanhamento institucional.">
+  <meta name="author" content="Sérgio Luís de Oliveira Pires">
+  <meta name="robots" content="index, follow">
+  <meta name="theme-color" content="#45763f">
 
+  <!-- Favicon e Favibar -->
   <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
   <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-
   <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
   <link rel="icon" type="image/png" sizes="192x192" href="img/android-chrome-192x192.png">
   <link rel="icon" type="image/png" sizes="512x512" href="img/android-chrome-512x512.png">
-
   <link rel="manifest" href="img/site.webmanifest">
 
-  <link rel="stylesheet" href="css/style.css">
-</head>
-<body>
-  <main class="container">
-    <div class="logo"><b>Slpires.COM</b></div>
-    <div class="status">Ambiente de Prova de Conceito (PoC) – TCC UFF</div>
+  <!-- Open Graph / SEO social -->
+  <meta property="og:title" content="SLPIRES.COM – Recuperação de Créditos | TCC UFF">
+  <meta property="og:description" content="Acesse a documentação, acompanhe o Kanban e experimente o sistema. Projeto acadêmico oficial UFF.">
+  <meta property="og:image" content="img/og_tcc_slpirescom.png">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
 
-    <div class="tcc-title">
-      <div class="titulo-bloco1">
+  <!-- CSS institucional unificado -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Favibar para navegação em dispositivos modernos -->
+  <link rel="mask-icon" href="img/safari-pinned-tab.svg" color="#45763f">
+</head>
+<body class="home-bg">
+
+  <div class="home-container">
+    <!-- Logo textual institucional -->
+    <h1 class="logo" aria-label="Logotipo textual institucional">Slpires.COM</h1>
+    <div class="status">Ambiente Oficial – TCC UFF 2025 – Prova de Conceito</div>
+
+    <!-- Título do projeto -->
+    <h2 class="tcc-title">
+      <span class="titulo-bloco1">
         DESENVOLVIMENTO DE UM PROTÓTIPO WEB PARA RECUPERAÇÃO DE <br>
         CRÉDITOS NA FOLHA DE PAGAMENTO DA SLPIRES.COM:
-      </div>
-      <div class="titulo-espaco"></div>
-      <div class="titulo-bloco2">
+      </span>
+      <span class="titulo-espaco"></span>
+      <span class="titulo-bloco2">
         UMA PROVA DE CONCEITO PARA AUTOMAÇÃO NA GESTÃO DE OPERAÇÕES
-      </div>
-    </div>
+      </span>
+    </h2>
 
+    <!-- Apresentação -->
     <p>
-      Este ambiente está dedicado à demonstração do sistema desenvolvido como Trabalho de Conclusão de Curso (TCC)<br>
+      Bem-vindo(a) ao portal acadêmico do TCC SLPIRES.COM.<br>
+      Sistema desenvolvido como Prova de Conceito para controle e recuperação de valores na folha de pagamento.<br>
       <strong>Curso:</strong> Tecnologia em Sistemas de Computação – UFF<br>
-      <strong>Autor:</strong> Sérgio Luís de Oliveira Pires
+      <strong>Autor:</strong>
+        Sérgio Luís de Oliveira Pires
+        <a href="http://lattes.cnpq.br/6560673234797856"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="CV Lattes de Sérgio Luís de Oliveira Pires"
+           class="lattes-link"
+        >📄</a>
+      <br>
+      <strong>Orientador:</strong>
+        Prof. Leandro Soares de Sousa
+        <a href="http://lattes.cnpq.br/5733271257229469"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="CV Lattes do Prof. Leandro Soares de Sousa"
+           class="lattes-link"
+        >📄</a>
     </p>
 
-    <p><strong>Acesse a documentação completa ou acompanhe o andamento do projeto:</strong></p>
+    <!-- Chamadas de ação -->
+    <p style="font-size:1.07rem; margin:18px 0 28px 0; font-weight:600;">
+      Acesse a documentação completa, acompanhe o Kanban, consulte a Wiki técnica ou entre no sistema:
+    </p>
 
-    <div class="github-group">
+    <!-- Grupo de botões principais -->
+    <div class="github-group" style="margin-bottom:40px;">
       <a class="github" href="https://github.com/slpires/tcc" target="_blank" rel="noopener noreferrer" aria-label="Ver repositório no GitHub">
         🧠 Ver repositório no GitHub
       </a>
       <a class="github" href="https://github.com/users/slpires/projects/2" target="_blank" rel="noopener noreferrer" aria-label="Acompanhar quadro Kanban">
         🗂️ Acompanhar quadro Kanban
       </a>
+      <a class="github" href="https://github.com/slpires/tcc/wiki" target="_blank" rel="noopener noreferrer" aria-label="Consultar documentação técnica na Wiki">
+        📘 Documentação Técnica (Wiki)
+      </a>
+      <a class="github btn btn-mvp" href="app/index.html" target="_blank" rel="noopener noreferrer" aria-label="Entrar no Sistema">
+        🚀 Entrar no MVP do Sistema
+      </a>
     </div>
 
-    <div class="credit">
-      © 2025 – Prova de Conceito acadêmica.<br>
-      Desenvolvido sob orientação do Prof. Leandro Soares de Sousa.
+    <!-- Créditos institucionais -->
+    <div class="credit" style="margin-bottom: 0;">
+      © 2025 – Prova de Conceito acadêmica.
     </div>
 
-    <footer class="footer-version">
+    <!-- Rodapé final (Sistema versão + contato) -->
+    <div class="footer-version">
       <small>
         Sistema versão <span id="sys-version">1.0.0</span> – Padrão SemVer
         (<a href="https://semver.org/lang/pt-BR/" target="_blank">saiba mais</a>)<br>
         Dúvidas ou sugestões? Entre em <a href="https://olink.ai/slpires" target="_blank" rel="noopener noreferrer">contato</a>.
       </small>
-    </footer>
-  </main>
+    </div>
+
+    <!-- Bloco de agradecimentos e logos centralizado -->
+    <div class="footer-agradecimentos">Agradecimentos:</div>
+    <div class="footer-institucional">
+      <a href="https://www.cecierj.edu.br/" target="_blank" rel="noopener noreferrer" aria-label="Site da Fundação CECIERJ">
+        <img src="img/logo_cecierj.png" alt="Logo CECIERJ" class="logo-inst">
+      </a>
+      <a href="https://www.uff.br/" target="_blank" rel="noopener noreferrer" aria-label="Site da Universidade Federal Fluminense">
+        <img src="img/logo_uff_azul.png" alt="Logo UFF" class="logo-inst">
+      </a>
+      <a href="https://www.ic.uff.br/" target="_blank" rel="noopener noreferrer" aria-label="Site do Instituto de Computação da UFF">
+        <img src="img/logo_ic.png" alt="Logo Instituto de Computação UFF" class="logo-inst">
+      </a>
+    </div>
+
+  </div>
   <script src="js/main.js"></script>
 </body>
 </html>
