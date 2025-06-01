@@ -4,6 +4,7 @@ config/config.php
 
 # Logs e arquivos temporários
 logs/
+logs/.htaccess
 *.log
 *.tmp
 *.cache
@@ -31,7 +32,11 @@ Thumbs.db
 # Arquivos/pastas de hospedagem e FTP
 .well-known/
 .ftpquota
+
+# .htaccess: permitir apenas os específicos de segurança
+# IMPORTANTE: versionar manualmente apenas se justificado
 .htaccess
+!logs/.htaccess  # não versionar este em produção
 
 # Arquivos e diretórios do XAMPP (evite versionar qualquer pasta do XAMPP)
 xampp/
