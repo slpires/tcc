@@ -1,0 +1,22 @@
+# ==============================================
+# PROTEÇÃO DA PASTA /logs/ EM AMBIENTE DE PRODUÇÃO
+# Projeto: SLPIRES.COM – MVP
+# Última atualização: 01/06/2025
+# ==============================================
+
+# Bloqueia qualquer acesso via navegador a esta pasta
+<IfModule mod_authz_core.c>
+    Require all denied
+</IfModule>
+
+<IfModule !mod_authz_core.c>
+    Deny from all
+</IfModule>
+
+# Desativa listagem de arquivos
+Options -Indexes
+
+# Observação:
+# Esta configuração protege os arquivos de logs e evidências (.log, .txt, .json, etc.)
+# Não aplicar em ambiente de desenvolvimento local, caso deseje inspecionar os resultados diretamente.
+
