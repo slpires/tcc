@@ -22,7 +22,7 @@ CREATE TABLE parametro_credito_desconto (
 INSERT INTO parametro_credito_desconto (tipo_folha, desconto_automatico, tipo_desconto, data_ultima_alteracao) VALUES
     ('MENSAL', 'SIM', 'parcela', NOW()),            -- Folha Mensal: desconto automático ativo, em parcelas
     ('13_SALARIO', 'SIM', 'parcela', NOW()),  -- 13º Salário: permite desconto automático de parcela
-    ('FERIAS', 'NAO', 'parcela', NOW()),            -- Férias: desconto automático desativado de parcela
+    ('FERIAS', 'SIM', 'parcela', NOW()),            -- Férias: desconto automático desativado de parcela
     ('PLR', 'NAO', 'parcela', NOW()),         -- PLR: sem desconto automátioc permitido de parcela
     ('BONUS', 'SIM', 'saldo_devedor', NOW());             -- Bônus: com desconto automático até o saldo devedor se possível
 

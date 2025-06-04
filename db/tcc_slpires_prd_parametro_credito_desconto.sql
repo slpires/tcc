@@ -15,6 +15,6 @@ CREATE TABLE parametro_credito_desconto (
 INSERT INTO parametro_credito_desconto (tipo_folha, desconto_automatico, tipo_desconto, data_ultima_alteracao) VALUES
     ('MENSAL', 'SIM', 'parcela', NOW()),
     ('13_SALARIO', 'SIM', 'parcela', NOW()),
-    ('FERIAS', 'NAO', 'parcela', NOW()),
+    ('FERIAS', 'SIM', 'parcela', NOW()),
     ('PLR', 'NAO', 'parcela', NOW()),
     ('BONUS', 'SIM', 'saldo_devedor', NOW());
