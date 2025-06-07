@@ -1,0 +1,33 @@
+{
+  "__comentario": [
+    "==================================================================",
+    "Arquivo: motivos_parcelamento.json",
+    "Projeto: TCC SLPIRES.COM – UFF",
+    "Objetivo: Domínio de motivos padronizados para registro automático ou manual do campo tipo_erro em créditos a recuperar na folha de pagamento simulada.",
+    "Uso: Auxilia todos os módulos que realizam lançamentos ou consultas de créditos, garantindo padronização, rastreabilidade e manutenção facilitada.",
+    "Manutenção: Atualizar somente mediante homologação. Alterações devem ser justificadas e versionadas conforme diretrizes do projeto.",
+    "Autor: Sérgio Luis de Oliveira Pires",
+    "Data de criação: 07/06/2025",
+    "=================================================================="
+  ],
+  "motivos": [
+    "Salário",
+    "Hora Extra",
+    "Férias",
+    "Banco de Horas",
+    "Adicional Noturno",
+    "Assistência Médica",
+    "Previdência",
+    "Pensão Judicial",
+    "Empréstimo Consignado",
+    "Frequência",
+    "IRRF",
+    "13º Salário",
+    "PLR",
+    "Bônus",
+    "Ajuste Manual",
+    "Valores a Recuperar",
+    "Recuperação Parcial",
+    "Recuperação Integral"
+  ]
+}
