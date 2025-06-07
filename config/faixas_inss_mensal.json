@@ -1,0 +1,87 @@
+{
+  "__comentario": [
+    "==================================================================",
+    "Arquivo: faixas_inss_mensal.json",
+    "Projeto: TCC SLPIRES.COM – UFF",
+    "Objetivo: Registro das faixas oficiais de contribuição previdenciária mensal (INSS)",
+    "          aplicáveis a trabalhadores da iniciativa privada, conforme Tabela da Previdência.",
+    "Período coberto: 2018 até 2025.",
+    "Observação: Todos os valores são em reais (R$). Para faixas progressivas, os descontos são acumulados por faixa.",
+    "Fonte: Ministério da Previdência / Portarias Interministeriais.",
+    "Atualização: Manutenção anual obrigatória.",
+    "Autor: Sérgio Luís de Oliveira Pires",
+    "Data de criação: 07/06/2025",
+    "=================================================================="
+  ],
+  "inss": [
+    {
+      "ano": 2018,
+      "faixas": [
+        { "limite_superior": 1693.72, "aliquota": 8.0 },
+        { "limite_superior": 2822.90, "aliquota": 9.0 },
+        { "limite_superior": 5645.80, "aliquota": 11.0 }
+      ]
+    },
+    {
+      "ano": 2019,
+      "faixas": [
+        { "limite_superior": 1751.81, "aliquota": 8.0 },
+        { "limite_superior": 2919.72, "aliquota": 9.0 },
+        { "limite_superior": 5839.45, "aliquota": 11.0 }
+      ]
+    },
+    {
+      "ano": 2020,
+      "faixas": [
+        { "limite_superior": 1830.29, "aliquota": 8.0 },
+        { "limite_superior": 3050.52, "aliquota": 9.0 },
+        { "limite_superior": 6101.06, "aliquota": 11.0 }
+      ]
+    },
+    {
+      "ano": 2021,
+      "faixas": [
+        { "limite_superior": 1100.00, "aliquota": 7.5 },
+        { "limite_superior": 2203.48, "aliquota": 9.0 },
+        { "limite_superior": 3305.22, "aliquota": 12.0 },
+        { "limite_superior": 6433.57, "aliquota": 14.0 }
+      ]
+    },
+    {
+      "ano": 2022,
+      "faixas": [
+        { "limite_superior": 1212.00, "aliquota": 7.5 },
+        { "limite_superior": 2427.35, "aliquota": 9.0 },
+        { "limite_superior": 3641.03, "aliquota": 12.0 },
+        { "limite_superior": 7087.22, "aliquota": 14.0 }
+      ]
+    },
+    {
+      "ano": 2023,
+      "faixas": [
+        { "limite_superior": 1320.00, "aliquota": 7.5 },
+        { "limite_superior": 2571.29, "aliquota": 9.0 },
+        { "limite_superior": 3856.94, "aliquota": 12.0 },
+        { "limite_superior": 7507.49, "aliquota": 14.0 }
+      ]
+    },
+    {
+      "ano": 2024,
+      "faixas": [
+        { "limite_superior": 1412.00, "aliquota": 7.5 },
+        { "limite_superior": 2667.19, "aliquota": 9.0 },
+        { "limite_superior": 4007.25, "aliquota": 12.0 },
+        { "limite_superior": 7786.02, "aliquota": 14.0 }
+      ]
+    },
+    {
+      "ano": 2025,
+      "faixas": [
+        { "limite_superior": 1518.00, "aliquota": 7.5 },
+        { "limite_superior": 2793.88, "aliquota": 9.0 },
+        { "limite_superior": 4190.83, "aliquota": 12.0 },
+        { "limite_superior": 8157.41, "aliquota": 14.0 }
+      ]
+    }
+  ]
+}

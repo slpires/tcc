@@ -1,0 +1,34 @@
+{
+  "__comentario": [
+    "==================================================================",
+    "Arquivo: modulos_nome_amigavel.json",
+    "Projeto: TCC SLPIRES.COM – UFF",
+    "Objetivo: Domínio de mapeamento entre nomes técnicos dos módulos (tabela MODULO)",
+    "         e nomes amigáveis para exibição na interface do sistema.",
+    "Uso: Todos os módulos e camadas de apresentação do SLPIRES.COM devem utilizar este mapeamento",
+    "     para garantir padronização, rastreabilidade e clareza na experiência do usuário.",
+    "Manutenção: Atualizar somente mediante homologação e registro no histórico.",
+    "           Alterações devem ser justificadas conforme diretrizes do projeto.",
+    "Autor: Sérgio Luís de Oliveira Pires",
+    "Data de criação: 07/06/2025",
+    "=================================================================="
+  ],
+  "modulos": [
+    {
+      "nome_tecnico": "SIMULACAO_FOLHA",
+      "nome_amigavel": "Simulação da Folha de Pagamento"
+    },
+    {
+      "nome_tecnico": "CONTROLE_CREDITO",
+      "nome_amigavel": "Créditos"
+    },
+    {
+      "nome_tecnico": "RELATORIOS",
+      "nome_amigavel": "Relatórios"
+    },
+    {
+      "nome_tecnico": "TESTES",
+      "nome_amigavel": "Testes"
+    }
+  ]
+}

@@ -1,0 +1,98 @@
+{
+  "__comentario": [
+    "==================================================================",
+    "Arquivo: faixas_irrf_mensal.json",
+    "Projeto: TCC SLPIRES.COM – UFF",
+    "Objetivo: Registro das faixas oficiais de tributação do IRRF mensal no Brasil",
+    "          para uso na simulação da folha de pagamento.",
+    "Período coberto: 2018 até 2025 (com base na legislação vigente em cada ano).",
+    "Observação: Todos os valores de faixa são em reais (R$).",
+    "Fonte: Receita Federal do Brasil / Leis e Instruções Normativas publicadas.",
+    "Atualização: Manutenção anual obrigatória ou quando houver alteração na legislação.",
+    "Autor: Sérgio Luís de Oliveira Pires",
+    "Data de criação: 07/06/2025",
+    "=================================================================="
+  ],
+  "irrf": [
+    {
+      "ano": 2018,
+      "faixas": [
+        { "limite_superior": 1903.98, "aliquota": 0.0, "deducao": 0.0 },
+        { "limite_superior": 2826.65, "aliquota": 7.5, "deducao": 142.80 },
+        { "limite_superior": 3751.05, "aliquota": 15.0, "deducao": 354.80 },
+        { "limite_superior": 4664.68, "aliquota": 22.5, "deducao": 636.13 },
+        { "limite_superior": null, "aliquota": 27.5, "deducao": 869.36 }
+      ]
+    },
+    {
+      "ano": 2019,
+      "faixas": [
+        { "limite_superior": 1903.98, "aliquota": 0.0, "deducao": 0.0 },
+        { "limite_superior": 2826.65, "aliquota": 7.5, "deducao": 142.80 },
+        { "limite_superior": 3751.05, "aliquota": 15.0, "deducao": 354.80 },
+        { "limite_superior": 4664.68, "aliquota": 22.5, "deducao": 636.13 },
+        { "limite_superior": null, "aliquota": 27.5, "deducao": 869.36 }
+      ]
+    },
+    {
+      "ano": 2020,
+      "faixas": [
+        { "limite_superior": 1903.98, "aliquota": 0.0, "deducao": 0.0 },
+        { "limite_superior": 2826.65, "aliquota": 7.5, "deducao": 142.80 },
+        { "limite_superior": 3751.05, "aliquota": 15.0, "deducao": 354.80 },
+        { "limite_superior": 4664.68, "aliquota": 22.5, "deducao": 636.13 },
+        { "limite_superior": null, "aliquota": 27.5, "deducao": 869.36 }
+      ]
+    },
+    {
+      "ano": 2021,
+      "faixas": [
+        { "limite_superior": 1903.98, "aliquota": 0.0, "deducao": 0.0 },
+        { "limite_superior": 2826.65, "aliquota": 7.5, "deducao": 142.80 },
+        { "limite_superior": 3751.05, "aliquota": 15.0, "deducao": 354.80 },
+        { "limite_superior": 4664.68, "aliquota": 22.5, "deducao": 636.13 },
+        { "limite_superior": null, "aliquota": 27.5, "deducao": 869.36 }
+      ]
+    },
+    {
+      "ano": 2022,
+      "faixas": [
+        { "limite_superior": 1903.98, "aliquota": 0.0, "deducao": 0.0 },
+        { "limite_superior": 2826.65, "aliquota": 7.5, "deducao": 142.80 },
+        { "limite_superior": 3751.05, "aliquota": 15.0, "deducao": 354.80 },
+        { "limite_superior": 4664.68, "aliquota": 22.5, "deducao": 636.13 },
+        { "limite_superior": null, "aliquota": 27.5, "deducao": 869.36 }
+      ]
+    },
+    {
+      "ano": 2023,
+      "faixas": [
+        { "limite_superior": 2112.00, "aliquota": 0.0, "deducao": 0.0 },
+        { "limite_superior": 2826.65, "aliquota": 7.5, "deducao": 158.40 },
+        { "limite_superior": 3751.05, "aliquota": 15.0, "deducao": 370.40 },
+        { "limite_superior": 4664.68, "aliquota": 22.5, "deducao": 651.73 },
+        { "limite_superior": null, "aliquota": 27.5, "deducao": 884.96 }
+      ]
+    },
+    {
+      "ano": 2024,
+      "faixas": [
+        { "limite_superior": 2112.00, "aliquota": 0.0, "deducao": 0.0 },
+        { "limite_superior": 2826.65, "aliquota": 7.5, "deducao": 158.40 },
+        { "limite_superior": 3751.05, "aliquota": 15.0, "deducao": 370.40 },
+        { "limite_superior": 4664.68, "aliquota": 22.5, "deducao": 651.73 },
+        { "limite_superior": null, "aliquota": 27.5, "deducao": 884.96 }
+      ]
+    },
+    {
+      "ano": 2025,
+      "faixas": [
+        { "limite_superior": 2428.80, "aliquota": 0.0, "deducao": 0.0 },
+        { "limite_superior": 2826.65, "aliquota": 7.5, "deducao": 158.40 },
+        { "limite_superior": 3751.05, "aliquota": 15.0, "deducao": 370.40 },
+        { "limite_superior": 4664.68, "aliquota": 22.5, "deducao": 651.73 },
+        { "limite_superior": null, "aliquota": 27.5, "deducao": 884.96 }
+      ]
+    }
+  ]
+}
