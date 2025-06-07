@@ -1,20 +1,33 @@
+-- ===================================================================
 -- SCRIPT DE CRIAÇÃO E POPULAÇÃO DA TABELA PARAMETRO_CREDITO_DESCONTO
--- Ambiente: Produção (HostGator)
--- Data: 03/06/2025
+-- Projeto: SLPIRES.COM – MVP TCC UFF
+-- Ambiente: Produção (HostGator / MySQL)
+-- Data de Adaptação: 06/06/2025
 -- Responsável: Sérgio Luís de Oliveira Pires
+-- Origem: tcc_slpires_dev_parametro_credito_desconto.sql
+-- Referência: Modelo Conceitual do Projeto / Diretrizes do TCC
+-- ===================================================================
 
+USE slpir421_tcc_slpires;
+
+SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS parametro_credito_desconto;
+SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE parametro_credito_desconto (
-    tipo_folha VARCHAR(20) NOT NULL PRIMARY KEY,   -- Ex: MENSAL, 13_SALARIO, FERIAS, PLR
-    desconto_automatico ENUM('SIM', 'NAO') NOT NULL DEFAULT 'SIM',
-    tipo_desconto ENUM('saldo_devedor', 'parcela') NOT NULL DEFAULT 'parcela',
-    data_ultima_alteracao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Parâmetros de desconto por tipo de folha (SLPIRES.COM)';
+    tipo_folha VARCHAR(15) PRIMARY KEY,
+    desconto_automatico ENUM('SIM','NAO') NOT NULL,
+    tipo_desconto VARCHAR(30) NOT NULL,
+    data_ultima_alteracao DATETIME NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Parâmetros de desconto por tipo de folha (SLPIRES.COM)';
+
+-- =====================
+-- POPULAÇÃO INICIAL
+-- =====================
 
 INSERT INTO parametro_credito_desconto (tipo_folha, desconto_automatico, tipo_desconto, data_ultima_alteracao) VALUES
-    ('MENSAL', 'SIM', 'parcela', NOW()),
-    ('13_SALARIO', 'SIM', 'parcela', NOW()),
-    ('FERIAS', 'SIM', 'parcela', NOW()),
-    ('PLR', 'NAO', 'parcela', NOW()),
-    ('BONUS', 'SIM', 'saldo_devedor', NOW());
+    ('MENSAL', 'SIM', 'parcela', NOW()),            -- Folha Mensal: desconto automático ativo em parcelas
+    ('13_SALARIO', 'SIM', 'parcela', NOW()),        -- 13º Salário: desconto automático ativo em parcelas
+    ('FERIAS', 'SIM', 'parcela', NOW()),            -- Férias: desconto automático ativo em parcelas
+    ('PLR', 'NAO', 'parcela', NOW()),               -- PLR: sem desconto automático permitido de parcela
+    ('BONUS', 'SIM', 'saldo_devedor', NOW());       -- Bônus: desconto automático ativo para o saldo_devedor

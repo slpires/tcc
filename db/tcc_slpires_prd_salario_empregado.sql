@@ -1,20 +1,33 @@
+-- ===================================================================
+-- SCRIPT DE CRIAÇÃO E POPULAÇÃO DA TABELA SALARIO_EMPREGADO
+-- Projeto: SLPIRES.COM – MVP TCC UFF
+-- Ambiente: Produção (HostGator / MySQL)
+-- Data de Adaptação: 06/06/2025
+-- Responsável: Sérgio Luís de Oliveira Pires
+-- Origem: tcc_slpires_dev_salario_empregado.sql
+-- Referência: Modelo Conceitual do Projeto / Diretrizes do TCC
+-- ===================================================================
+
 USE slpir421_tcc_slpires;
 
+SET FOREIGN_KEY_CHECKS = 0;
 DROP TABLE IF EXISTS salario_empregado;
+SET FOREIGN_KEY_CHECKS = 1;
 
 CREATE TABLE salario_empregado (
     matricula VARCHAR(10) NOT NULL,
     ano_referencia INT NOT NULL,
-    valor_salario DECIMAL(10,2) NOT NULL,
+    valor_salario DECIMAL(12,2) NOT NULL,
     data_reajuste DATE NOT NULL,
-    percentual_reajuste DECIMAL(5,2) DEFAULT NULL,
-    observacao VARCHAR(255) DEFAULT NULL,
+    percentual_reajuste DECIMAL(5,2) NOT NULL,
+    observacao VARCHAR(100),
     PRIMARY KEY (matricula, ano_referencia),
-    CONSTRAINT fk_salario_empregado_empregado
-        FOREIGN KEY (matricula) REFERENCES empregado(matricula)
-        ON UPDATE CASCADE ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    FOREIGN KEY (matricula) REFERENCES empregado(matricula)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='Histórico de salários dos empregados SLPIRES.COM';
 
+-- =====================
+-- POPULAÇÃO INICIAL
+-- =====================
 INSERT INTO salario_empregado (matricula, ano_referencia, valor_salario, data_reajuste, percentual_reajuste, observacao) VALUES
 ('916800101', 2018, 30383.00, '2018-01-01', 0, 'Salário inicial conforme faixa e tempo de experiência'),
 ('916800101', 2019, 33041.51, '2019-01-01', 8.75, 'Reajuste anual de salário conforme política da empresa'),
