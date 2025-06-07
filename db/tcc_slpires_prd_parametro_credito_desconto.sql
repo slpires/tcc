@@ -10,7 +10,7 @@ CREATE TABLE parametro_credito_desconto (
     desconto_automatico ENUM('SIM', 'NAO') NOT NULL DEFAULT 'SIM',
     tipo_desconto ENUM('saldo_devedor', 'parcela') NOT NULL DEFAULT 'parcela',
     data_ultima_alteracao DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='Parâmetros de desconto por tipo de folha (SLPIRES.COM)';
 
 INSERT INTO parametro_credito_desconto (tipo_folha, desconto_automatico, tipo_desconto, data_ultima_alteracao) VALUES
     ('MENSAL', 'SIM', 'parcela', NOW()),
