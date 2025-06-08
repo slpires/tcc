@@ -1,3 +1,8 @@
+<?php
+// [INCLUSÃO]
+// Este bloco PHP inicial foi incluído para futura expansão: exibir mensagens dinâmicas, iniciar sessão, ou controles de fluxo.
+// Atualmente, permanece vazio. Adapte conforme evolução do sistema (opcional).
+?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -38,38 +43,38 @@
     <h1 class="logo" aria-label="Logotipo textual institucional">Slpires.COM</h1>
     <div class="status">Ambiente Oficial – TCC UFF 2025 – Prova de Conceito</div>
 
-	<h2 class="tcc-title" style="text-align:center;">
-	  <div>DESENVOLVIMENTO DE UM PROTÓTIPO WEB PARA RECUPERAÇÃO DE CRÉDITOS</div>
-	  <div>NA FOLHA DE PAGAMENTO DA SLPIRES.COM:</div>
-	  <div style="height:0.8em;"></div>
-	  <div>UMA PROVA DE CONCEITO PARA AUTOMAÇÃO NA GESTÃO DE OPERAÇÕES</div>
-	</h2>
+    <h2 class="tcc-title" style="text-align:center;">
+      <div>DESENVOLVIMENTO DE UM PROTÓTIPO WEB PARA RECUPERAÇÃO DE CRÉDITOS</div>
+      <div>NA FOLHA DE PAGAMENTO DA SLPIRES.COM:</div>
+      <div style="height:0.8em;"></div>
+      <div>UMA PROVA DE CONCEITO PARA AUTOMAÇÃO NA GESTÃO DE OPERAÇÕES</div>
+    </h2>
 
     <!-- Apresentação -->
-	<div class="apresentacao-blocos">
-	  <div class="apresentacao-credenciais">
-		<strong>Curso:</strong> Tecnologia em Sistemas de Computação – UFF<br>
-		<strong>Autor:</strong> Sérgio Luís de Oliveira Pires
-		<a href="http://lattes.cnpq.br/6560673234797856"
-		   target="_blank"
-		   rel="noopener noreferrer"
-		   aria-label="CV Lattes de Sérgio Luís de Oliveira Pires"
-		   class="lattes-link"
-		>📄</a>
-		<br>
-		<strong>Orientador:</strong> Prof. Leandro Soares de Sousa
-		<a href="http://lattes.cnpq.br/5733271257229469"
-		   target="_blank"
-		   rel="noopener noreferrer"
-		   aria-label="CV Lattes do Prof. Leandro Soares de Sousa"
-		   class="lattes-link"
-		>📄</a>
-	  </div>
-	  <div style="height: 1em;"></div>
-	  <div class="apresentacao-boasvindas">
-		Bem-vindo(a) ao portal acadêmico do TCC SLPIRES.COM!
-	  </div>
-	</div>
+    <div class="apresentacao-blocos">
+      <div class="apresentacao-credenciais">
+        <strong>Curso:</strong> Tecnologia em Sistemas de Computação – UFF<br>
+        <strong>Autor:</strong> Sérgio Luís de Oliveira Pires
+        <a href="http://lattes.cnpq.br/6560673234797856"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="CV Lattes de Sérgio Luís de Oliveira Pires"
+           class="lattes-link"
+        >📄</a>
+        <br>
+        <strong>Orientador:</strong> Prof. Leandro Soares de Sousa
+        <a href="http://lattes.cnpq.br/5733271257229469"
+           target="_blank"
+           rel="noopener noreferrer"
+           aria-label="CV Lattes do Prof. Leandro Soares de Sousa"
+           class="lattes-link"
+        >📄</a>
+      </div>
+      <div style="height: 1em;"></div>
+      <div class="apresentacao-boasvindas">
+        Bem-vindo(a) ao portal acadêmico do TCC SLPIRES.COM!
+      </div>
+    </div>
 
     <!-- Chamadas de ação -->
     <p style="font-size:1.07rem; margin:18px 0 28px 0; font-weight:600;">
@@ -87,7 +92,13 @@
       <a class="github" href="https://github.com/slpires/tcc/wiki" target="_blank" rel="noopener noreferrer" aria-label="Consultar documentação técnica na Wiki">
         📘 Documentação Técnica (Wiki)
       </a>
-      <a class="github btn btn-mvp" href="app/index.html" target="_blank" rel="noopener noreferrer" aria-label="Entrar no Sistema">
+      <!-- [ALTERAÇÃO]
+        - O botão "Entrar no MVP do Sistema" foi ajustado:
+        - O href agora aponta para "index.php" (front controller/ponto de entrada dinâmico do sistema)
+        - Removidos target="_blank" e rel="noopener noreferrer" para manter o fluxo seguro na mesma aba/sessão
+        - O texto e aria-label permanecem inalterados.
+      -->
+      <a class="github btn btn-mvp" href="../src/view/index.php" aria-label="Entrar no Sistema">
         🚀 Entrar no MVP do Sistema
       </a>
     </div>
