@@ -1,43 +1,56 @@
-# Configurações sensíveis de ambiente
+# ==============================================================================
+# SLPIRES.COM – TCC UFF
+# .gitignore institucional – versão padronizada (2025)
+# Regras de bloqueio e exceções documentadas conforme diretrizes do projeto
+# ==============================================================================
+
+# [AMBIENTE] Configurações sensíveis e arquivos de ambiente
 config/config.php
 .env
 
-# Logs e arquivos temporários
+# [LOGS] Bloqueio total de logs e arquivos temporários gerados pelo sistema
 logs/
-logs/.htaccess
+logs/.htaccess           # Só versionar logs/.htaccess se documentado em histórico
 *.log
 *.tmp
 *.cache
 *.bak
 *.old
 
-# Arquivos de backup do banco de dados
+# [BANCO DE DADOS] Arquivos de backup, exportações e históricos SQL
 db/*.bak
 db/*.sql.bak
 db/*.backup.sql
 
-# Arquivos temporários ou de teste
+# [TESTES E DOCUMENTAÇÃO] Arquivos/pastas de evidências temporárias e prints
 tests/tmp/
 docs/tmp/
 docs/prints/
 
-# Arquivos do sistema operacional
+# [SISTEMA OPERACIONAL] Arquivos gerados automaticamente pelo SO
 .DS_Store
 Thumbs.db
 
-# IDEs e editores
+# [IDE/EDITORES] Diretórios e arquivos de configuração de IDEs
 .vscode/
 *.code-workspace
 
-# Arquivos/pastas de hospedagem e FTP
+# [HOSPEDAGEM/FTP] Arquivos e pastas de infraestrutura do servidor
 .well-known/
 .ftpquota
 
-# .htaccess: permitir apenas os específicos de segurança
-# IMPORTANTE: versionar manualmente apenas se justificado
+# [.HTACCESS] Bloqueio global do .htaccess, exceto logs/.htaccess (protegido manualmente)
 .htaccess
-!logs/.htaccess  # não versionar este em produção
+!logs/.htaccess  # [EXCEÇÃO] Só versionar logs/.htaccess com justificativa e controle
 
-# Arquivos e diretórios do XAMPP (evite versionar qualquer pasta do XAMPP)
+# [XAMPP] Bloqueio de diretórios e arquivos do ambiente local (XAMPP, XAMPPfiles)
 xampp/
 xamppfiles/
+
+# [PADRÃO TCC] Bloqueio de arquivos PHP de desenvolvimento/teste contendo "index_" no nome
+*index_*.php
+
+# ==============================================================================
+# Fim do .gitignore institucional padronizado – SLPIRES.COM | TCC UFF
+# Regras detalhadas e rastreabilidade obrigatória em histórico/documentação
+# ==============================================================================
