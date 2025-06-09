@@ -7,7 +7,41 @@
 </IfModule>
 # php -- END cPanel-generated handler, do not edit
 
+# ==============================================================================
+# /tcc/.htaccess
+# [VERSÃO PADRONIZADA]
+# Arquivo de controle de reescrita e segurança para o servidor Apache.
+# Utilizado no projeto SLPIRES.COM (TCC UFF).
+# Define regras de redirecionamento condicional, segurança de diretórios
+# e proteção de arquivos sensíveis, garantindo funcionamento consistente
+# entre os ambientes de desenvolvimento (localhost) e produção (HostGator).
+# ==============================================================================
+
+# Ativa o mecanismo de reescrita
 RewriteEngine On
+
+# [DETECÇÃO DE AMBIENTE]
+SetEnvIf Host "^localhost(:[0-9]*)?$" AMBIENTE_LOCAL=1
+
+# [REDIRECIONAMENTO HTTPS – PRODUÇÃO APENAS]
+RewriteCond %{ENV:AMBIENTE_LOCAL} !1
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# [SEGURANÇA]
+Options -Indexes
+
+<FilesMatch "\.(bak|old|sql|env|ini|log|conf|json)$">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+
+# ==============================================================================
+# [OBSERVAÇÃO]
+# Este arquivo deve ser mantido na raiz do projeto (/tcc/) e replicado em produção.
+# O redirecionamento para HTTPS é ativado automaticamente apenas fora do localhost.
+# Este .htaccess não afeta arquivos da pasta /public diretamente, que deve conter
+# apenas index.php e recursos acessíveis (CSS, JS, imagens).
+# ==============================================================================
+
 

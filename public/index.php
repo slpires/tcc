@@ -1,7 +1,20 @@
 <?php
-// [INCLUSÃO]
-// Este bloco PHP inicial foi incluído para futura expansão: exibir mensagens dinâmicas, iniciar sessão, ou controles de fluxo.
-// Atualmente, permanece vazio. Adapte conforme evolução do sistema (opcional).
+
+/*
+    /public/index.php
+    [INCLUSÃO]
+    Landing page institucional do sistema SLPIRES.COM (TCC UFF).
+    Aciona o front controller, carrega caminhos dinâmicos e exibe a interface principal pública.
+*/
+
+// [INCLUSÃO] Aciona o front controller centralizado do sistema
+require_once __DIR__ . '/../src/controller/front_controller.php';
+
+// [INCLUSÃO] Carrega definição do $base_url para assets e links institucionais
+require_once __DIR__ . '/../config/paths.php';
+
+/* [BLOCO] Exibe landing page apenas se ?pagina=home ou nenhum parâmetro for informado */
+if (!isset($_GET['pagina']) || $_GET['pagina'] === 'home') {
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -14,31 +27,34 @@
   <meta name="robots" content="index, follow">
   <meta name="theme-color" content="#45763f">
 
-  <!-- Favicon e Favibar -->
-  <link rel="icon" type="image/png" sizes="32x32" href="img/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="img/favicon-16x16.png">
-  <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
-  <link rel="apple-touch-icon" sizes="180x180" href="img/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="192x192" href="img/android-chrome-192x192.png">
-  <link rel="icon" type="image/png" sizes="512x512" href="img/android-chrome-512x512.png">
-  <link rel="manifest" href="img/site.webmanifest">
+  <!-- [INCLUSÃO] Favicon e Favibar -->
+  <link rel="icon" type="image/png" sizes="32x32" href="<?= $base_url ?>/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="<?= $base_url ?>/img/favicon-16x16.png">
+  <link rel="shortcut icon" href="<?= $base_url ?>/img/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="<?= $base_url ?>/img/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="<?= $base_url ?>/img/android-chrome-192x192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="<?= $base_url ?>/img/android-chrome-512x512.png">
+  <link rel="manifest" href="<?= $base_url ?>/img/site.webmanifest">
 
-  <!-- Open Graph / SEO social -->
+  <!-- [INCLUSÃO] Open Graph / SEO social -->
   <meta property="og:title" content="SLPIRES.COM – Recuperação de Créditos | TCC UFF">
   <meta property="og:description" content="Acesse a documentação, acompanhe o Kanban e experimente o sistema. Projeto acadêmico oficial UFF.">
-  <meta property="og:image" content="img/og_tcc_slpirescom.png">
+  <meta property="og:image" content="<?= $base_url ?>/img/og_tcc_slpirescom.png">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="pt_BR">
 
-  <!-- CSS institucional unificado -->
-  <link rel="stylesheet" href="css/style.css">
+  <!-- [INCLUSÃO] CSS institucional unificado -->
+  <link rel="stylesheet" href="<?= $base_url ?>/css/style.css">
 
-  <!-- Favibar para navegação em dispositivos modernos -->
-  <link rel="mask-icon" href="img/safari-pinned-tab.svg" color="#45763f">
+  <!-- [INCLUSÃO] Favibar para navegação em dispositivos modernos -->
+  <link rel="mask-icon" href="<?= $base_url ?>/img/safari-pinned-tab.svg" color="#45763f">
 </head>
 <body class="home-bg">
 
   <div class="home-container">
+    <!-- [INCLUSÃO] Exibição padronizada de mensagens institucionais (erro, sucesso, alerta) -->
+    <?php include __DIR__ . '/../src/view/componentes/mensagens.php'; ?>
+
     <!-- Logo textual institucional -->
     <h1 class="logo" aria-label="Logotipo textual institucional">Slpires.COM</h1>
     <div class="status">Ambiente Oficial – TCC UFF 2025 – Prova de Conceito</div>
@@ -94,11 +110,10 @@
       </a>
       <!-- [ALTERAÇÃO]
         - O botão "Entrar no MVP do Sistema" foi ajustado:
-        - O href agora aponta para "index.php" (front controller/ponto de entrada dinâmico do sistema)
-        - Removidos target="_blank" e rel="noopener noreferrer" para manter o fluxo seguro na mesma aba/sessão
+        - Agora o href aponta para o front controller via parâmetro seguro (?pagina=sistema)
         - O texto e aria-label permanecem inalterados.
       -->
-      <a class="github btn btn-mvp" href="../src/view/index.php" aria-label="Entrar no Sistema">
+      <a class="github btn btn-mvp" href="index.php?pagina=sistema" aria-label="Entrar no Sistema">
         🚀 Entrar no MVP do Sistema
       </a>
     </div>
@@ -121,17 +136,19 @@
     <div class="footer-agradecimentos">Agradecimentos:</div>
     <div class="footer-institucional">
       <a href="https://www.cecierj.edu.br/" target="_blank" rel="noopener noreferrer" aria-label="Site da Fundação CECIERJ">
-        <img src="img/logo_cecierj.png" alt="Logo CECIERJ" class="logo-inst">
+        <img src="<?= $base_url ?>/img/logo_cecierj.png" alt="Logo CECIERJ" class="logo-inst">
       </a>
       <a href="https://www.uff.br/" target="_blank" rel="noopener noreferrer" aria-label="Site da Universidade Federal Fluminense">
-        <img src="img/logo_uff_azul.png" alt="Logo UFF" class="logo-inst">
+        <img src="<?= $base_url ?>/img/logo_uff_azul.png" alt="Logo UFF" class="logo-inst">
       </a>
       <a href="https://www.ic.uff.br/" target="_blank" rel="noopener noreferrer" aria-label="Site do Instituto de Computação da UFF">
-        <img src="img/logo_ic.png" alt="Logo Instituto de Computação UFF" class="logo-inst">
+        <img src="<?= $base_url ?>/img/logo_ic.png" alt="Logo Instituto de Computação UFF" class="logo-inst">
       </a>
     </div>
 
   </div>
-  <script src="js/main.js"></script>
+  <!-- [INCLUSÃO] JS institucional unificado -->
+  <script src="<?= $base_url ?>/js/main.js"></script>
 </body>
 </html>
+<?php } /* Fim do bloco condicional da landing page */ ?>
