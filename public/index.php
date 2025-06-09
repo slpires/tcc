@@ -43,8 +43,13 @@ if (!isset($_GET['pagina']) || $_GET['pagina'] === 'home') {
   <meta property="og:type" content="website">
   <meta property="og:locale" content="pt_BR">
 
-  <!-- [INCLUSÃO] CSS institucional unificado -->
-  <link rel="stylesheet" href="<?= $base_url ?>/css/style.css">
+  <!--
+    [TRECHO ORIGINAL] CSS institucional unificado com base dinâmica
+    <link rel="stylesheet" href="<?= $base_url ?>/css/style.css">
+  -->
+
+  <!-- [EXCEÇÃO TEMPORÁRIA] Caminho absoluto para garantir estilização em produção -->
+  <link rel="stylesheet" href="/css/style.css">
 
   <!-- [INCLUSÃO] Favibar para navegação em dispositivos modernos -->
   <link rel="mask-icon" href="<?= $base_url ?>/img/safari-pinned-tab.svg" color="#45763f">
@@ -166,17 +171,31 @@ if (!isset($_GET['pagina']) || $_GET['pagina'] === 'home') {
 
     <!-- Bloco de agradecimentos e logos centralizado -->
     <div class="footer-agradecimentos">Agradecimentos:</div>
-    <div class="footer-institucional">
-      <a href="https://www.cecierj.edu.br/" target="_blank" rel="noopener noreferrer" aria-label="Site da Fundação CECIERJ">
-        <img src="<?= $base_url ?>/img/logo_cecierj.png" alt="Logo CECIERJ" class="logo-inst">
-      </a>
-      <a href="https://www.uff.br/" target="_blank" rel="noopener noreferrer" aria-label="Site da Universidade Federal Fluminense">
-        <img src="<?= $base_url ?>/img/logo_uff_azul.png" alt="Logo UFF" class="logo-inst">
-      </a>
-      <a href="https://www.ic.uff.br/" target="_blank" rel="noopener noreferrer" aria-label="Site do Instituto de Computação da UFF">
-        <img src="<?= $base_url ?>/img/logo_ic.png" alt="Logo Instituto de Computação UFF" class="logo-inst">
-      </a>
-    </div>
+	<div class="footer-institucional">
+	  <!--
+		[TRECHO ORIGINAL]
+		<a href="https://www.cecierj.edu.br/" target="_blank" rel="noopener noreferrer" aria-label="Site da Fundação CECIERJ">
+		  <img src="<?= $base_url ?>/img/logo_cecierj.png" alt="Logo CECIERJ" class="logo-inst">
+		</a>
+		<a href="https://www.uff.br/" target="_blank" rel="noopener noreferrer" aria-label="Site da Universidade Federal Fluminense">
+		  <img src="<?= $base_url ?>/img/logo_uff_azul.png" alt="Logo UFF" class="logo-inst">
+		</a>
+		<a href="https://www.ic.uff.br/" target="_blank" rel="noopener noreferrer" aria-label="Site do Instituto de Computação da UFF">
+		  <img src="<?= $base_url ?>/img/logo_ic.png" alt="Logo Instituto de Computação UFF" class="logo-inst">
+		</a>
+	  -->
+
+	  <!-- [EXCEÇÃO TEMPORÁRIA] Caminho absoluto para garantir exibição das logos institucionais em produção -->
+	  <a href="https://www.cecierj.edu.br/" target="_blank" rel="noopener noreferrer" aria-label="Site da Fundação CECIERJ">
+		<img src="/img/logo_cecierj.png" alt="Logo CECIERJ" class="logo-inst">
+	  </a>
+	  <a href="https://www.uff.br/" target="_blank" rel="noopener noreferrer" aria-label="Site da Universidade Federal Fluminense">
+		<img src="/img/logo_uff_azul.png" alt="Logo UFF" class="logo-inst">
+	  </a>
+	  <a href="https://www.ic.uff.br/" target="_blank" rel="noopener noreferrer" aria-label="Site do Instituto de Computação da UFF">
+		<img src="/img/logo_ic.png" alt="Logo Instituto de Computação UFF" class="logo-inst">
+	  </a>
+	</div>
 
   </div>
   <!-- [INCLUSÃO] JS institucional unificado -->
