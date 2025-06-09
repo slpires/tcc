@@ -108,47 +108,15 @@ if (!isset($_GET['pagina']) || $_GET['pagina'] === 'home') {
       <a class="github" href="https://github.com/slpires/tcc/wiki" target="_blank" rel="noopener noreferrer" aria-label="Consultar documentação técnica na Wiki">
         📘 Documentação Técnica (Wiki)
       </a>
-      <!--
-        [CÓDIGO ORIGINAL] Botão ativo removido, mantido como comentário para rastreabilidade.
-        <a class="github btn btn-mvp" href="index.php?pagina=sistema" aria-label="Entrar no Sistema">
-          🚀 Entrar no MVP do Sistema
-        </a>
+      <!-- [ALTERAÇÃO]
+        - O botão "Entrar no MVP do Sistema" foi ajustado:
+        - Agora o href aponta para o front controller via parâmetro seguro (?pagina=sistema)
+        - O texto e aria-label permanecem inalterados.
       -->
-      <!-- [AJUSTE] Botão desabilitado com feedback institucional e UX aprimorada -->
-      <a
-        id="btn-mvp-desabilitado"
-        class="github btn btn-mvp"
-        href="#"
-        aria-disabled="true"
-        style="opacity: 0.5; cursor: not-allowed;"
-        title="O sistema entrará no ar em breve"
-      >
+      <a class="github btn btn-mvp" href="index.php?pagina=sistema" aria-label="Entrar no Sistema">
         🚀 Entrar no MVP do Sistema
       </a>
-      <span id="msg-mvp" style="display:none; color:#b03535; font-weight:600; margin-top:8px;">O sistema entrará no ar em breve.</span>
     </div>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        const btn = document.getElementById('btn-mvp-desabilitado');
-        const msg = document.getElementById('msg-mvp');
-        if(btn){
-          btn.addEventListener('click', function(e){
-            e.preventDefault();
-            if(msg){
-              msg.style.display = 'inline';
-              setTimeout(function(){ msg.style.display = 'none'; }, 4000);
-            }
-            return false;
-          });
-          btn.addEventListener('focus', function(){
-            if(msg){
-              msg.style.display = 'inline';
-              setTimeout(function(){ msg.style.display = 'none'; }, 4000);
-            }
-          });
-        }
-      });
-    </script>
 
     <!-- Créditos institucionais -->
     <div class="credit" style="margin-bottom: 0;">
