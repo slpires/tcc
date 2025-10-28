@@ -1,35 +1,45 @@
 <?php
 /*
-    /src/controller/verificar_permissao.php
+    /src/controller/selecao_perfil.php
     [FUNÇÃO]
-    Middleware simples de autorização.
-    Verifica se há sessão ativa e perfil válido antes de permitir acesso aos módulos.
+    Controlador responsável pela seleção de perfil do usuário.
+    Define o perfil ativo na sessão e redireciona para o painel principal do sistema.
 
     [PADRÃO DEV/PRD]
-    Usa $url_base para redirecionamentos públicos e mantém inicialização unificada.
+    Utiliza variáveis dinâmicas ($url_base, $controller_url) para compatibilidade entre ambientes.
 */
 
-/* [INICIALIZAÇÃO] Sessão + paths */
+/* [INICIALIZAÇÃO] Sessão e paths dinâmicos */
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 require_once __DIR__ . '/../../config/paths.php';
 
-/* [REGRAS] Perfis válidos e rota de fallback */
-$perfis_validos = ['ADMINISTRADOR', 'RH', 'EMPREGADO'];
+/* [BLOCO] Verifica se o formulário de seleção foi enviado */
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['perfil'])) {
+    $perfil = trim($_POST['perfil']);
 
-/* [CHECAGEM 1] Sessão e perfil presentes */
-if (empty($_SESSION['perfil'])) {
-    header("Location: {$url_base}/index.php?pagina=sistema&erro=sem_sessao");
+    /* [VALIDAÇÃO] Perfil obrigatório */
+    if ($perfil === '') {
+        header("Location: {$url_base}/index.php?pagina=sistema&erro=perfil_vazio");
+        exit;
+    }
+
+    /* [VALIDAÇÃO] Perfis permitidos (ajustável conforme regras futuras) */
+    $perfis_validos = ['ADMINISTRADOR', 'RH', 'EMPREGADO'];
+    if (!in_array(strtoupper($perfil), $perfis_validos, true)) {
+        header("Location: {$url_base}/index.php?pagina=sistema&erro=perfil_invalido");
+        exit;
+    }
+
+    /* [SESSÃO] Armazena perfil ativo */
+    $_SESSION['perfil'] = strtoupper($perfil);
+
+    /* [REDIRECIONAMENTO] Encaminha para painel de módulos */
+    header("Location: {$url_base}/index.php?pagina=painel_modulos");
     exit;
 }
 
-/* [CHECAGEM 2] Perfil permitido */
-$perfil = strtoupper((string) $_SESSION['perfil']);
-if (!in_array($perfil, $perfis_validos, true)) {
-    header("Location: {$url_base}/index.php?pagina=sistema&erro=perfil_nao_autorizado");
-    exit;
-}
-
-/* [OK] Autorizado — seguir fluxo do módulo chamador */
-return true;
+/* [CHAMADA DIRETA] Sem POST → retorna para seleção de perfil */
+header("Location: {$url_base}/index.php?pagina=sistema");
+exit;
