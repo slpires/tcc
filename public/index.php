@@ -37,7 +37,7 @@ if (!isset($_GET['pagina']) || $_GET['pagina'] === 'home') {
   <!-- [INCLUSÃO] Open Graph / SEO social -->
   <meta property="og:title" content="SLPIRES.COM – Recuperação de Créditos | TCC UFF">
   <meta property="og:description" content="Acesse a documentação, acompanhe o Kanban e experimente o sistema. Projeto acadêmico oficial UFF.">
-  <meta property="og:image" content="<?= $base_url ?>/img/og_tcc_slpirescom.png">
+  <meta property="og:image" content="<?= $base_url ?>/img/logo_uff_azul.png">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="pt_BR">
 
