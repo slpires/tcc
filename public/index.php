@@ -1,19 +1,17 @@
 <?php
-
 /*
     /public/index.php
     [INCLUSÃO]
     Landing page institucional do sistema SLPIRES.COM (TCC UFF).
-    Aciona o front controller, carrega caminhos dinâmicos e exibe a interface principal pública.
+    Carrega caminhos dinâmicos e, quando aplicável, aciona o front controller.
 */
 
-// [INCLUSÃO] Aciona o front controller centralizado do sistema
-require_once __DIR__ . '/../src/controller/front_controller.php';
-
-// [INCLUSÃO] Carrega definição do $base_url para assets e links institucionais
+/* [INCLUSÃO] Carrega definição do $base_url para assets e links institucionais
+   (necessário antes de qualquer <link> ou <script> que utilize $base_url) */
 require_once __DIR__ . '/../config/paths.php';
 
-/* [BLOCO] Exibe landing page apenas se ?pagina=home ou nenhum parâmetro for informado */
+/* [BLOCO] Se não houver parâmetro ou ?pagina=home, renderiza a landing page;
+   caso contrário, delega o processamento ao front controller. */
 if (!isset($_GET['pagina']) || $_GET['pagina'] === 'home') {
 ?>
 <!DOCTYPE html>
@@ -43,13 +41,8 @@ if (!isset($_GET['pagina']) || $_GET['pagina'] === 'home') {
   <meta property="og:type" content="website">
   <meta property="og:locale" content="pt_BR">
 
-  <!--
-    [TRECHO ORIGINAL] CSS institucional unificado com base dinâmica
-    <link rel="stylesheet" href="<?= $base_url ?>/css/style.css">
-  -->
-
-  <!-- [EXCEÇÃO TEMPORÁRIA] Caminho absoluto para garantir estilização em produção -->
-  <link rel="stylesheet" href="/css/style.css">
+  <!-- [INCLUSÃO] CSS institucional unificado -->
+  <link rel="stylesheet" href="<?= $base_url ?>/css/style.css">
 
   <!-- [INCLUSÃO] Favibar para navegação em dispositivos modernos -->
   <link rel="mask-icon" href="<?= $base_url ?>/img/safari-pinned-tab.svg" color="#45763f">
@@ -113,47 +106,10 @@ if (!isset($_GET['pagina']) || $_GET['pagina'] === 'home') {
       <a class="github" href="https://github.com/slpires/tcc/wiki" target="_blank" rel="noopener noreferrer" aria-label="Consultar documentação técnica na Wiki">
         📘 Documentação Técnica (Wiki)
       </a>
-      <!--
-        [CÓDIGO ORIGINAL] Botão ativo removido, mantido como comentário para rastreabilidade.
-        <a class="github btn btn-mvp" href="index.php?pagina=sistema" aria-label="Entrar no Sistema">
-          🚀 Entrar no MVP do Sistema
-        </a>
-      -->
-      <!-- [AJUSTE] Botão desabilitado com feedback institucional e UX aprimorada -->
-      <a
-        id="btn-mvp-desabilitado"
-        class="github btn btn-mvp"
-        href="#"
-        aria-disabled="true"
-        style="opacity: 0.5; cursor: not-allowed;"
-        title="O sistema entrará no ar em breve"
-      >
+      <a class="github btn btn-mvp" href="index.php?pagina=sistema" aria-label="Entrar no Sistema">
         🚀 Entrar no MVP do Sistema
       </a>
-      <span id="msg-mvp" style="display:none; color:#b03535; font-weight:600; margin-top:8px;">O sistema entrará no ar em breve.</span>
     </div>
-    <script>
-      document.addEventListener('DOMContentLoaded', function () {
-        const btn = document.getElementById('btn-mvp-desabilitado');
-        const msg = document.getElementById('msg-mvp');
-        if(btn){
-          btn.addEventListener('click', function(e){
-            e.preventDefault();
-            if(msg){
-              msg.style.display = 'inline';
-              setTimeout(function(){ msg.style.display = 'none'; }, 4000);
-            }
-            return false;
-          });
-          btn.addEventListener('focus', function(){
-            if(msg){
-              msg.style.display = 'inline';
-              setTimeout(function(){ msg.style.display = 'none'; }, 4000);
-            }
-          });
-        }
-      });
-    </script>
 
     <!-- Créditos institucionais -->
     <div class="credit" style="margin-bottom: 0;">
@@ -171,35 +127,27 @@ if (!isset($_GET['pagina']) || $_GET['pagina'] === 'home') {
 
     <!-- Bloco de agradecimentos e logos centralizado -->
     <div class="footer-agradecimentos">Agradecimentos:</div>
-	<div class="footer-institucional">
-	  <!--
-		[TRECHO ORIGINAL]
-		<a href="https://www.cecierj.edu.br/" target="_blank" rel="noopener noreferrer" aria-label="Site da Fundação CECIERJ">
-		  <img src="<?= $base_url ?>/img/logo_cecierj.png" alt="Logo CECIERJ" class="logo-inst">
-		</a>
-		<a href="https://www.uff.br/" target="_blank" rel="noopener noreferrer" aria-label="Site da Universidade Federal Fluminense">
-		  <img src="<?= $base_url ?>/img/logo_uff_azul.png" alt="Logo UFF" class="logo-inst">
-		</a>
-		<a href="https://www.ic.uff.br/" target="_blank" rel="noopener noreferrer" aria-label="Site do Instituto de Computação da UFF">
-		  <img src="<?= $base_url ?>/img/logo_ic.png" alt="Logo Instituto de Computação UFF" class="logo-inst">
-		</a>
-	  -->
-
-	  <!-- [EXCEÇÃO TEMPORÁRIA] Caminho absoluto para garantir exibição das logos institucionais em produção -->
-	  <a href="https://www.cecierj.edu.br/" target="_blank" rel="noopener noreferrer" aria-label="Site da Fundação CECIERJ">
-		<img src="/img/logo_cecierj.png" alt="Logo CECIERJ" class="logo-inst">
-	  </a>
-	  <a href="https://www.uff.br/" target="_blank" rel="noopener noreferrer" aria-label="Site da Universidade Federal Fluminense">
-		<img src="/img/logo_uff_azul.png" alt="Logo UFF" class="logo-inst">
-	  </a>
-	  <a href="https://www.ic.uff.br/" target="_blank" rel="noopener noreferrer" aria-label="Site do Instituto de Computação da UFF">
-		<img src="/img/logo_ic.png" alt="Logo Instituto de Computação UFF" class="logo-inst">
-	  </a>
-	</div>
+    <div class="footer-institucional">
+      <a href="https://www.cecierj.edu.br/" target="_blank" rel="noopener noreferrer" aria-label="Site da Fundação CECIERJ">
+        <img src="<?= $base_url ?>/img/logo_cecierj.png" alt="Logo CECIERJ" class="logo-inst">
+      </a>
+      <a href="https://www.uff.br/" target="_blank" rel="noopener noreferrer" aria-label="Site da Universidade Federal Fluminense">
+        <img src="<?= $base_url ?>/img/logo_uff_azul.png" alt="Logo UFF" class="logo-inst">
+      </a>
+      <a href="https://www.ic.uff.br/" target="_blank" rel="noopener noreferrer" aria-label="Site do Instituto de Computação da UFF">
+        <img src="<?= $base_url ?>/img/logo_ic.png" alt="Logo Instituto de Computação UFF" class="logo-inst">
+      </a>
+    </div>
 
   </div>
   <!-- [INCLUSÃO] JS institucional unificado -->
   <script src="<?= $base_url ?>/js/main.js"></script>
 </body>
 </html>
-<?php } /* Fim do bloco condicional da landing page */ ?>
+<?php
+    // Fim da landing page
+    exit;
+}
+
+/* [INCLUSÃO] Para qualquer outra página/rota, delega ao front controller */
+require_once __DIR__ . '/../src/controller/front_controller.php';
