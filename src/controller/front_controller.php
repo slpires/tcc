@@ -1,67 +1,50 @@
 <?php
 /*
     /src/controller/front_controller.php
-    [INCLUSÃO]
-    Front controller centralizado do sistema SLPIRES.COM (TCC UFF).
-    Responsável pelo roteamento seguro, inicialização global da sessão e disponibilização de caminhos dinâmicos para views e controllers.
+    [FUNÇÃO] Front controller centralizado — roteamento seguro e inicializações globais.
+    [PADRÃO DEV/PRD] Evita hardcodes; usa $url_base (view pública) e $controller_url (controller).
 */
 
-/* [INCLUSÃO] Definição do diretório base do projeto (BASE_PATH), se ainda não definido. */
-if (!defined('BASE_PATH')) {
-    define('BASE_PATH', dirname(__DIR__, 2)); // raiz do projeto
-}
-
-/* [INCLUSÃO] Inicialização da sessão global (apenas se não iniciada ainda). */
+/* [INICIALIZAÇÃO] Sessão + paths */
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+require_once __DIR__ . '/../../config/paths.php';
 
-/* [INCLUSÃO] Carrega caminhos institucionais ($base_url, $controller_url) para assets e links. */
-require_once BASE_PATH . '/config/paths.php';
-
-/* [BLOCO] Roteamento principal via parâmetro GET 'pagina'.
-   Determina qual módulo/controller será carregado, garantindo navegação centralizada. */
-$pagina = isset($_GET['pagina']) ? $_GET['pagina'] : 'home';
+/* [ROTEAMENTO] */
+$pagina = $_GET['pagina'] ?? 'home';
 
 switch ($pagina) {
-    case 'sistema':
-        /* [INCLUSÃO] Carrega controller da preparação dinâmica de perfis (MVC). */
-        require_once BASE_PATH . '/src/controller/prepara_perfis.php';
-        exit;
-    case 'relatorios':
-        /* [INCLUSÃO] Carrega controller do módulo de relatórios. */
-        require_once BASE_PATH . '/src/controller/relatorios.php';
-        exit;
-    case 'modulos':
-        /* [INCLUSÃO] Carrega controller do painel de módulos. */
-        require_once BASE_PATH . '/src/view/painel_modulos.php';
-        exit;
-    case 'creditos':
-        /* [INCLUSÃO] Carrega controller do controle de créditos. */
-        require_once BASE_PATH . '/src/controller/controle_credito.php';
-        exit;
-    case 'simulacao_folha':
-        /* [INCLUSÃO] Carrega controller do módulo de simulação da folha de pagamento. */
-        require_once BASE_PATH . '/src/controller/simulacao_folha.php';
-        exit;
-    case 'testes':
-        /* [INCLUSÃO] Carrega controller do módulo de testes automatizados. */
-        require_once BASE_PATH . '/src/controller/testes.php';
-        exit;
     case 'home':
-        /* [BLOCO] Landing page será exibida normalmente pelo index.php público. */
-        break;
+        // Páginas públicas → $url_base
+        header("Location: {$url_base}/index.php");
+        exit;
+
+    case 'sistema':
+        // Porta de entrada (seleção de perfis)
+        require_once __DIR__ . '/selecao_perfil.php';
+        exit;
+
+    case 'logout':
+        require_once __DIR__ . '/logout.php';
+        exit;
+
+    // Casos futuros (ex.: módulos)
+    case 'painel_modulos':
+        // Exemplo: controller específico do painel quando existir
+        // require_once __DIR__ . '/painel_modulos.php';
+        // exit;
+        header("Location: {$url_base}/index.php?erro=rota_indisponivel");
+        exit;
+
     default:
-        /* [BLOCO] Página/módulo não encontrado: retorna à landing page com código de erro padronizado. */
-        header("Location: " . $base_url . "/index.php?erro=modulo_invalido");
+        // Página/módulo não encontrado → voltar à landing com código de erro padronizado
+        header("Location: {$url_base}/index.php?erro=modulo_invalido");
         exit;
 }
 
-/*
-    [OBSERVAÇÃO]
-    Este arquivo deve ser incluído no início de /public/index.php.
-    Toda navegação protegida do sistema deve ocorrer exclusivamente via parâmetro ?pagina=nome_modulo,
-    e sempre passar pelo respectivo controller do módulo (não pela view diretamente).
-    O $base_url estará disponível para todas as views carregadas após este ponto.
+/* [OBS]:
+   1) Em PRD, $url_base === '' (DocumentRoot aponta para /public).
+   2) Em DEV, $url_base === '/tcc/public'.
+   3) Para redirecionar a um controller, preferir $controller_url.
 */
-?>
