@@ -6,10 +6,35 @@
     Responsável por validar perfil, módulo e permissão de acordo com a matriz de acesso.
 */
 
-// [VALIDAÇÃO] Garante que a sessão contém perfil
-if (!isset($_SESSION['perfil'])) {
-    /* [REDIRECIONAMENTO] Sessão inválida – retorna à landing page com erro padronizado */
-    header("Location: ../../public/index.php?erro=acesso_negado");
+/* [INCLUSÃO] Caminhos institucionais para redirecionamento dinâmico */
+require_once __DIR__ . '/../../config/paths.php';
+
+/* [INCLUSÃO] Caminhos institucionais para redirecionamento dinâmico */
+require_once __DIR__ . '/../../config/paths.php';
+
+/* [SESSÃO] Inicialização idempotente */
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+/* [NOVO] Rotas públicas (não exigem perfil em sessão) */
+$pagina = isset($_GET['pagina']) ? trim($_GET['pagina']) : 'sistema';
+$rotas_publicas = ['sistema']; // pode incluir 'home' se necessário
+if (in_array($pagina, $rotas_publicas, true)) {
+    // Não validar permissão para o hub/seleção.
+    return;
+}
+
+
+/* [SESSÃO] Inicialização idempotente */
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+/* [VALIDAÇÃO] Perfil em sessão é obrigatório */
+if (empty($_SESSION['perfil'])) {
+    /* Sessão inválida – volta ao hub estável do sistema com erro padronizado */
+    header("Location: {$url_base}/index.php?pagina=sistema&erro=acesso_negado");
     exit;
 }
 
@@ -17,9 +42,9 @@ if (!isset($_SESSION['perfil'])) {
 require_once __DIR__ . '/../model/conexao.php';
 $conn = conectar();
 
-/* [INCLUSÃO] Identificação do módulo corrente */
-$perfil = $_SESSION['perfil'];
-$modulo_atual = basename($_SERVER['SCRIPT_NAME'], '.php'); // Ex: "simulacao_folha"
+/* [INCLUSÃO] Identificação do módulo corrente via roteamento por querystring */
+$perfil        = $_SESSION['perfil'];
+$modulo_atual  = isset($_GET['pagina']) ? trim($_GET['pagina']) : 'sistema';
 $modulo_atual_upper = strtoupper($modulo_atual);
 
 /* [BLOCO] Busca id_modulo pelo nome técnico (case-insensitive) */
@@ -51,24 +76,28 @@ if (mysqli_stmt_fetch($stmt_modulo)) {
         mysqli_stmt_store_result($stmt_verifica);
 
         if (mysqli_stmt_num_rows($stmt_verifica) === 0) {
-            /* [REDIRECIONAMENTO] Sem permissão – volta ao painel de módulos com erro padronizado */
+            /* Sem permissão – volta ao hub do sistema com erro padronizado */
             mysqli_stmt_close($stmt_verifica);
             mysqli_close($conn);
-            header("Location: ../../public/index.php?pagina=modulos&erro=acesso_negado");
+            header("Location: {$url_base}/index.php?pagina=sistema&erro=acesso_negado");
             exit;
         }
         mysqli_stmt_close($stmt_verifica);
+
     } else {
-        /* [TRATAMENTO] Perfil não encontrado – encerra sessão e retorna à landing page com erro */
+        /* Perfil não encontrado – encerra sessão e retorna ao hub com erro padronizado */
+        mysqli_stmt_close($stmt_perfil);
         mysqli_close($conn);
         session_destroy();
-        header("Location: ../../public/index.php?erro=perfil_invalido");
+        header("Location: {$url_base}/index.php?pagina=sistema&erro=perfil_invalido");
         exit;
     }
+
 } else {
-    /* [TRATAMENTO] Módulo não existe – retorna ao painel com erro padronizado */
+    /* Módulo não existe – retorna ao painel de módulos com erro padronizado */
+    mysqli_stmt_close($stmt_modulo);
     mysqli_close($conn);
-    header("Location: ../../public/index.php?pagina=modulos&erro=modulo_inexistente");
+    header("Location: {$url_base}/index.php?pagina=modulos&erro=modulo_inexistente");
     exit;
 }
 

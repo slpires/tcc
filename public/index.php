@@ -10,6 +10,11 @@
    (necessário antes de qualquer <link> ou <script> que utilize $base_url) */
 require_once __DIR__ . '/../config/paths.php';
 
+/* [NOVO] Sessão idempotente: segura para componentes que venham a usar $_SESSION */
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
 /* [BLOCO] Se não houver parâmetro ou ?pagina=home, renderiza a landing page;
    caso contrário, delega o processamento ao front controller. */
 if (!isset($_GET['pagina']) || $_GET['pagina'] === 'home') {
@@ -106,7 +111,8 @@ if (!isset($_GET['pagina']) || $_GET['pagina'] === 'home') {
       <a class="github" href="https://github.com/slpires/tcc/wiki" target="_blank" rel="noopener noreferrer" aria-label="Consultar documentação técnica na Wiki">
         📘 Documentação Técnica (Wiki)
       </a>
-      <a class="github btn btn-mvp" href="index.php?pagina=sistema" aria-label="Entrar no Sistema">
+      <!-- [AJUSTE] usar $url_base para portabilidade DEV/PRD -->
+      <a class="github btn btn-mvp" href="<?= $url_base ?>/index.php?pagina=sistema" aria-label="Entrar no Sistema">
         🚀 Entrar no MVP do Sistema
       </a>
     </div>

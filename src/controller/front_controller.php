@@ -16,52 +16,59 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-/* [INCLUSÃO] Carrega caminhos institucionais ($base_url, $controller_url) para assets e links. */
+/* [INCLUSÃO] Carrega caminhos institucionais ($base_url, $controller_url, $url_base) para assets e links. */
 require_once BASE_PATH . '/config/paths.php';
 
 /* [BLOCO] Roteamento principal via parâmetro GET 'pagina'.
-   Determina qual módulo/controller será carregado, garantindo navegação centralizada. */
-$pagina = isset($_GET['pagina']) ? $_GET['pagina'] : 'home';
+   A área do sistema (MVP/PoC) usa 'sistema' como rota padrão (NÃO 'home'). */
+$pagina = isset($_GET['pagina']) ? $_GET['pagina'] : 'sistema';
+
+/* [INCLUSÃO] Checagem central de permissão ANTES de carregar módulos/views.
+   O script deve redirecionar para {$url_base}/index.php?pagina=sistema&erro=acesso_negado quando necessário,
+   sem produzir saída (echo/print). */
+require_once BASE_PATH . '/src/controller/verificar_permissao.php';
 
 switch ($pagina) {
     case 'sistema':
-        /* [INCLUSÃO] Carrega controller da preparação dinâmica de perfis (MVC). */
+        /* [INCLUSÃO] Controller da preparação dinâmica de perfis (MVC). */
         require_once BASE_PATH . '/src/controller/prepara_perfis.php';
         exit;
+
     case 'relatorios':
-        /* [INCLUSÃO] Carrega controller do módulo de relatórios. */
+        /* [INCLUSÃO] Controller do módulo de relatórios. */
         require_once BASE_PATH . '/src/controller/relatorios.php';
         exit;
+
     case 'modulos':
-        /* [INCLUSÃO] Carrega controller do painel de módulos. */
+        /* [INCLUSÃO] Painel de módulos (view/painel). */
         require_once BASE_PATH . '/src/view/painel_modulos.php';
         exit;
+
     case 'creditos':
-        /* [INCLUSÃO] Carrega controller do controle de créditos. */
+        /* [INCLUSÃO] Controller do controle de créditos. */
         require_once BASE_PATH . '/src/controller/controle_credito.php';
         exit;
+
     case 'simulacao_folha':
-        /* [INCLUSÃO] Carrega controller do módulo de simulação da folha de pagamento. */
+        /* [INCLUSÃO] Controller do módulo de simulação da folha de pagamento. */
         require_once BASE_PATH . '/src/controller/simulacao_folha.php';
         exit;
+
     case 'testes':
-        /* [INCLUSÃO] Carrega controller do módulo de testes automatizados. */
+        /* [INCLUSÃO] Controller do módulo de testes automatizados. */
         require_once BASE_PATH . '/src/controller/testes.php';
         exit;
-    case 'home':
-        /* [BLOCO] Landing page será exibida normalmente pelo index.php público. */
-        break;
+
     default:
-        /* [BLOCO] Página/módulo não encontrado: retorna à landing page com código de erro padronizado. */
-        header("Location: " . $base_url . "/index.php?erro=modulo_invalido");
+        /* [BLOCO] Página/módulo não encontrado: fallback estável para 'sistema'
+           usando {$url_base}, evitando 404 e loops. */
+        header("Location: {$url_base}/index.php?pagina=sistema&erro=rota_inexistente");
         exit;
 }
 
 /*
     [OBSERVAÇÃO]
-    Este arquivo deve ser incluído no início de /public/index.php.
-    Toda navegação protegida do sistema deve ocorrer exclusivamente via parâmetro ?pagina=nome_modulo,
-    e sempre passar pelo respectivo controller do módulo (não pela view diretamente).
-    O $base_url estará disponível para todas as views carregadas após este ponto.
+    - Este arquivo é acionado por /public/index.php apenas quando há ?pagina=...
+    - A landing pública ('home') é renderizada SOMENTE pelo index.php, não por este front controller.
+    - $url_base garante portabilidade DEV/PRD nos redirecionamentos.
 */
-?>

@@ -6,6 +6,16 @@
     Exibido apenas em páginas internas do sistema (exceto seleção de perfil).
     Mostra identificação, perfil, setor e horário atualizado automaticamente.
 */
+
+/* [INCLUSÃO] Caminhos institucionais para assets e links dinâmicos */
+require_once __DIR__ . '/../../config/paths.php';
+
+/* [SESSÃO] Inicialização idempotente */
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+/* [VALIDAÇÃO] Exibe o rodapé apenas se o usuário estiver autenticado */
 if (
     isset($_SESSION['nome'], $_SESSION['matricula'], $_SESSION['cargo'], $_SESSION['perfil'], $_SESSION['setor'])
 ) :
@@ -13,10 +23,14 @@ if (
   <footer class="footer-version app-footer">
     <small>
       <!-- [INCLUSÃO] Linha 1: Identificação principal do usuário (nome em negrito) -->
-      <strong><?= htmlspecialchars($_SESSION['nome']) ?></strong>
-      – matrícula: <?= htmlspecialchars($_SESSION['matricula']) ?> – <?= htmlspecialchars($_SESSION['cargo']) ?><br>
+      <strong><?= htmlspecialchars($_SESSION['nome'], ENT_QUOTES, 'UTF-8') ?></strong>
+      – matrícula: <?= htmlspecialchars($_SESSION['matricula'], ENT_QUOTES, 'UTF-8') ?>
+      – <?= htmlspecialchars($_SESSION['cargo'], ENT_QUOTES, 'UTF-8') ?><br>
+
       <!-- [INCLUSÃO] Linha 2: Perfil e setor -->
-      Perfil: <?= htmlspecialchars($_SESSION['perfil']) ?> – Setor: <?= htmlspecialchars($_SESSION['setor']) ?><br>
+      Perfil: <?= htmlspecialchars($_SESSION['perfil'], ENT_QUOTES, 'UTF-8') ?>
+      – Setor: <?= htmlspecialchars($_SESSION['setor'], ENT_QUOTES, 'UTF-8') ?><br>
+
       <!-- [INCLUSÃO] Linha 3: Data e hora atual com atualização automática -->
       <span id="data-hora-usuario">
         <?php
@@ -25,28 +39,18 @@ if (
         ?>
       </span>
       <br>
-      <!-- [INCLUSÃO] Botão de logout visível em todas as páginas internas -->
-      <a href="../controller/logout.php" class="btn-logout">Sair do Sistema</a>
+
+      <!-- [INCLUSÃO] Botão de logout padronizado -->
+      <a href="<?= $controller_url ?>/logout.php" class="btn-logout" aria-label="Encerrar sessão e retornar à página inicial">
+        Sair do Sistema
+      </a>
     </small>
   </footer>
+
   <!-- [INCLUSÃO] Script para atualização dinâmica da data/hora no rodapé -->
   <script>
     function atualizarRelogioRodape() {
       const agora = new Date();
       const doisDigitos = n => n.toString().padStart(2, '0');
       const data = [
-        doisDigitos(agora.getDate()),
-        doisDigitos(agora.getMonth() + 1),
-        agora.getFullYear()
-      ].join('/');
-      const hora = [
-        doisDigitos(agora.getHours()),
-        doisDigitos(agora.getMinutes()),
-        doisDigitos(agora.getSeconds())
-      ].join(':');
-      document.getElementById('data-hora-usuario').textContent = `${data} - ${hora}`;
-    }
-    setInterval(atualizarRelogioRodape, 1000);
-    atualizarRelogioRodape();
-  </script>
-<?php endif; ?>
+        do
