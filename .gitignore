@@ -1,12 +1,13 @@
 # ==============================================================================
 # SLPIRES.COM – TCC UFF
 # .gitignore institucional – versão padronizada (2025)
-# Regras de bloqueio e exceções documentadas conforme diretrizes do projeto
 # ==============================================================================
 
 # [AMBIENTE] Configurações sensíveis e arquivos de ambiente
 config/config.php
 .env
+*.env
+!.env.example
 
 # [LOGS] Bloqueio total de logs e arquivos temporários gerados pelo sistema
 logs/
@@ -27,28 +28,35 @@ tests/tmp/
 docs/tmp/
 docs/prints/
 
-# [SISTEMA OPERACIONAL] Arquivos gerados automaticamente pelo SO
+# [SISTEMA OPERACIONAL]
 .DS_Store
 Thumbs.db
 
-# [IDE/EDITORES] Diretórios e arquivos de configuração de IDEs
+# [IDE/EDITORES]
 .vscode/
 *.code-workspace
 
-# [HOSPEDAGEM/FTP] Arquivos e pastas de infraestrutura do servidor
+# [HOSPEDAGEM/FTP] Infra do servidor (fora do escopo do app)
 .well-known/
 .ftpquota
 
-# [.HTACCESS] Bloqueio global do .htaccess, exceto logs/.htaccess (protegido manualmente)
+# [.HTACCESS]
+# Regra geral: ignorar .htaccess...
 .htaccess
-!logs/.htaccess  # [EXCEÇÃO] Só versionar logs/.htaccess com justificativa e controle
+# ...mas EXCETUAR o .htaccess DA APLICAÇÃO (roteamento/segurança DEV=PRD)
+!public/.htaccess
+# manter exceção já prevista
+!logs/.htaccess
+# (se o repositório for versionado a partir de /tcc/, a linha acima cobre;
+# se houver outra raiz, acrescentar a exceção com caminho relativo adequado.)
 
-# [XAMPP] Bloqueio de diretórios e arquivos do ambiente local (XAMPP, XAMPPfiles)
+# [XAMPP] Ambiente local
 xampp/
 xamppfiles/
 
-# [PADRÃO TCC] Bloqueio de arquivos PHP de desenvolvimento/teste contendo "index_" no nome
+# [PADRÃO TCC] PHP de desenvolvimento/teste
 *index_*.php
+config/teste.php
 
 # ==============================================================================
 # Fim do .gitignore institucional padronizado – SLPIRES.COM | TCC UFF

@@ -1,47 +1,37 @@
+# ============================================
+# /tcc/public/.htaccess  (DEV e PRD, único)
+# ============================================
 
-
-# php -- BEGIN cPanel-generated handler, do not edit
-# Defina o pacote “ea-php82” como a linguagem padrão de programação “PHP”.
-<IfModule mime_module>
-  AddHandler application/x-httpd-ea-php82___lsphp .php .php8 .phtml
-</IfModule>
-# php -- END cPanel-generated handler, do not edit
-
-# ==============================================================================
-# /tcc/.htaccess
-# [VERSÃO PADRONIZADA]
-# Arquivo de controle de reescrita e segurança para o servidor Apache.
-# Utilizado no projeto SLPIRES.COM (TCC UFF).
-# Define regras de redirecionamento condicional, segurança de diretórios
-# e proteção de arquivos sensíveis, garantindo funcionamento consistente
-# entre os ambientes de desenvolvimento (localhost) e produção (HostGator).
-# ==============================================================================
-
-# Ativa o mecanismo de reescrita
 RewriteEngine On
 
-# [DETECÇÃO DE AMBIENTE]
-SetEnvIf Host "^localhost(:[0-9]*)?$" AMBIENTE_LOCAL=1
+# 1) Autodetecção de ambiente por Host
+SetEnv APP_ENV production
+SetEnvIf Host "^localhost(:[0-9]*)?$"        APP_ENV=development
+SetEnvIf Host "^127\.0\.0\.1(:[0-9]*)?$"     APP_ENV=development
 
-# [REDIRECIONAMENTO HTTPS – PRODUÇÃO APENAS]
-RewriteCond %{ENV:AMBIENTE_LOCAL} !1
-RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# 2) Opções
+Options -Indexes -MultiViews
 
-# [SEGURANÇA]
-Options -Indexes
+# 3) HTTPS apenas em produção
+RewriteCond %{ENV:APP_ENV} =production
+RewriteCond %{HTTPS} !=on
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-<FilesMatch "\.(bak|old|sql|env|ini|log|conf|json)$">
-  Order allow,deny
-  Deny from all
-</FilesMatch>
+# 4) Roteamento (front controller)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^ index.php [L]
 
-# ==============================================================================
-# [OBSERVAÇÃO]
-# Este arquivo deve ser mantido na raiz do projeto (/tcc/) e replicado em produção.
-# O redirecionamento para HTTPS é ativado automaticamente apenas fora do localhost.
-# Este .htaccess não afeta arquivos da pasta /public diretamente, que deve conter
-# apenas index.php e recursos acessíveis (CSS, JS, imagens).
-# ==============================================================================
+# 5) Bloqueio a arquivos sensíveis (Apache 2.4+)
+<IfModule mod_authz_core.c>
+  <FilesMatch "\.(env|ini|log|sql|bak|old|sh|conf|git|gitignore|example)$">
+    Require all denied
+  </FilesMatch>
+</IfModule>
 
-
+# 6) Variáveis para o app (lidas no PHP)
+RewriteCond %{ENV:APP_ENV} =production
+RewriteRule .* - [E=APP_DEBUG:false]
+RewriteCond %{ENV:APP_ENV} =development
+RewriteRule .* - [E=APP_DEBUG:true]
+SetEnvIfNoCase . "^.*$" APP_DEBUG=%{ENV:APP_DEBUG}
