@@ -3,22 +3,38 @@
     /src/controller/logout.php
     [INCLUSÃO]
     Controlador de logout do sistema SLPIRES.COM (TCC UFF).
-    Responsável por destruir a sessão ativa do usuário e redirecionar para a tela inicial institucional,
-    garantindo limpeza de dados e rastreabilidade de fluxo conforme melhores práticas de segurança.
+    Responsável por destruir a sessão ativa do usuário e redirecionar para o ponto de entrada institucional,
+    garantindo limpeza de dados e rastreabilidade conforme melhores práticas de segurança.
 */
 
-/* [BLOCO] Destruição da sessão de usuário */
-session_unset();
+/* [INCLUSÃO] Caminhos institucionais e variáveis de ambiente ($url_base, etc.) */
+require_once __DIR__ . '/../../config/paths.php';
+
+/* [SESSÃO] Inicialização idempotente antes da destruição */
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+
+/* [BLOCO] Limpeza completa da sessão */
+$_SESSION = [];
+
+/* [BLOCO] Invalidação do cookie de sessão (se aplicável) */
+if (ini_get('session.use_cookies')) {
+    $params = session_get_cookie_params();
+    setcookie(
+        session_name(),
+        '',
+        time() - 42000,
+        $params['path'],
+        $params['domain'],
+        $params['secure'],
+        $params['httponly']
+    );
+}
+
+/* [BLOCO] Destruição final da sessão */
 session_destroy();
 
-/*
-    [OBSERVAÇÃO]
-    O redirecionamento deve voltar SEMPRE para o ponto de entrada público do sistema,
-    preferencialmente pela landing page (public/index.php) ou seleção de perfil se existir.
-    Evite redirecionar diretamente para /src/view/index.php, pois viola o padrão MVC e bypassa o front controller.
-*/
-
-/* [INCLUSÃO] Redirecionamento seguro para a landing page institucional */
-header("Location: ../../public/index.php");
+/* [REDIRECIONAMENTO] Pós-logout para hub do sistema (evita loop com a homepage) */
+header("Location: {$url_base}/index.php?pagina=sistema&sucesso=logout_ok");
 exit;
-?>
