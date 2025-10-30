@@ -6,7 +6,7 @@
     Carrega caminhos dinâmicos e, quando aplicável, aciona o front controller.
 */
 
-/* [INCLUSÃO] Carrega definição do $base_url para assets e links institucionais
+/* [INCLUSÃO] Carrega definição do $base_url, $action_base e $url_base
    (necessário antes de qualquer <link> ou <script> que utilize $base_url) */
 require_once __DIR__ . '/../config/paths.php';
 
@@ -15,8 +15,42 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
-/* [BLOCO] Se não houver parâmetro ou ?pagina=home, renderiza a landing page;
-   caso contrário, delega o processamento ao front controller. */
+/* ============================================================
+   [BLOCO C] ROTEADOR POR QUERY (?r=rota)
+   - Apenas aciona quando houver parâmetro 'r'.
+   - Mantém compatibilidade com o fluxo anterior baseado em ?pagina.
+   ============================================================ */
+if (isset($_GET['r']) && $_GET['r'] !== '') {
+
+    // Rota por query string (?r=rota); padrão defensivo = 'home'
+    $route = $_GET['r'] ?? 'home';
+
+    // Mapa de rotas:
+    //  - VIEWS: abrem a view correspondente.
+    //  - CONTROLLERS: delegam a execução ao controller correspondente.
+    $map = [
+        // VIEWS
+        'home'    => __DIR__ . '/../src/view/index.php',
+        'painel'  => __DIR__ . '/../src/view/painel_modulos.php',
+
+        // CONTROLLERS
+        'perfil'      => __DIR__ . '/../src/controller/selecao_perfil.php',
+        'relatorios'  => __DIR__ . '/../src/controller/relatorios.php',
+        'creditos'    => __DIR__ . '/../src/controller/controle_credito.php',
+        'simulacao'   => __DIR__ . '/../src/controller/simulacao_folha.php',
+        'testes'      => __DIR__ . '/../src/controller/testes.php',
+        'logout'      => __DIR__ . '/../src/controller/logout.php',
+    ];
+
+    // Se a rota não existir no mapa, cair no front_controller genérico (fallback)
+    $file = $map[$route] ?? (__DIR__ . '/../src/controller/front_controller.php');
+
+    require $file;
+    exit;
+}
+
+/* [BLOCO] Se não houver 'r' e (não houver parâmetro ou ?pagina=home), renderiza a landing;
+   caso contrário (sem 'r'), delega o processamento ao front controller. */
 if (!isset($_GET['pagina']) || $_GET['pagina'] === 'home') {
 ?>
 <!DOCTYPE html>
@@ -155,5 +189,5 @@ if (!isset($_GET['pagina']) || $_GET['pagina'] === 'home') {
     exit;
 }
 
-/* [INCLUSÃO] Para qualquer outra página/rota, delega ao front controller */
+/* [INCLUSÃO] Para qualquer outra página/rota (sem 'r'), delega ao front controller */
 require_once __DIR__ . '/../src/controller/front_controller.php';
