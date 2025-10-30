@@ -3,22 +3,22 @@
     /src/controller/logout.php
     [INCLUSÃO]
     Controlador de logout do sistema SLPIRES.COM (TCC UFF).
-    Responsável por destruir a sessão ativa do usuário e redirecionar para o ponto de entrada institucional,
-    garantindo limpeza de dados e rastreabilidade conforme melhores práticas de segurança.
+    Responsável por destruir a sessão ativa do usuário e redirecionar para a landing page,
+    garantindo limpeza de dados e rastreabilidade conforme boas práticas de segurança.
 */
 
-/* [INCLUSÃO] Caminhos institucionais e variáveis de ambiente ($url_base, etc.) */
-require_once __DIR__ . '/../../config/paths.php';
-
-/* [SESSÃO] Inicialização idempotente antes da destruição */
-if (session_status() !== PHP_SESSION_ACTIVE) {
+/* Sessão idempotente antes da destruição */
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-/* [BLOCO] Limpeza completa da sessão */
+/* Caminhos institucionais ($url_base, $action_base, etc.) */
+require_once __DIR__ . '/../../config/paths.php';
+
+/* Limpeza completa da sessão */
 $_SESSION = [];
 
-/* [BLOCO] Invalidação do cookie de sessão (se aplicável) */
+/* Invalidação do cookie de sessão (se aplicável) */
 if (ini_get('session.use_cookies')) {
     $params = session_get_cookie_params();
     setcookie(
@@ -32,9 +32,9 @@ if (ini_get('session.use_cookies')) {
     );
 }
 
-/* [BLOCO] Destruição final da sessão */
+/* Destruição final da sessão */
 session_destroy();
 
-/* [REDIRECIONAMENTO] Pós-logout para hub do sistema (evita loop com a homepage) */
-header("Location: {$url_base}/index.php?pagina=sistema&sucesso=logout_ok");
+/* Redireciona para a landing page institucional (sem ?r=) */
+header('Location: ' . $url_base . '/');
 exit;

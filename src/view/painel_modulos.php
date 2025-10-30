@@ -6,17 +6,19 @@
     Inclui paths dinâmicos, conexão segura e mensagens institucionais padronizadas.
 */
 
-/* [INCLUSÃO] Inicializa a sessão e valida usuário autenticado */
+/* [INCLUSÃO] Inicializa a sessão */
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+/* [INCLUSÃO] Caminho base dinâmico para assets e roteamento centralizado */
+require_once __DIR__ . '/../../config/paths.php';
+
+/* [VALIDAÇÃO] Usuário autenticado (redireciona via front controller) */
 if (!isset($_SESSION['perfil'], $_SESSION['nome'], $_SESSION['matricula'])) {
-    header("Location: ../../public/index.php");
+    header('Location: ' . $action_base . '?r=home');
     exit;
 }
-
-/* [INCLUSÃO] Caminho base dinâmico para assets e controllers */
-require_once __DIR__ . '/../../config/paths.php';
 
 /* [INCLUSÃO] Conexão ao banco para buscar módulos permitidos do perfil */
 require_once __DIR__ . '/../model/conexao.php';
@@ -54,6 +56,13 @@ mysqli_close($conn);
 /* [INCLUSÃO] Carrega nomes amigáveis dos módulos a partir do JSON institucional */
 $modulos_json = file_get_contents(__DIR__ . '/../../config/modulos_nome_amigavel.json');
 $modulos_data = json_decode($modulos_json, true);
+
+/* [MAPA] Nomes técnicos (JSON/legado) → rotas canônicas do roteador */
+$rotaMap = [
+    'simulacao_folha'  => 'simulacao',
+    'controle_credito' => 'creditos',
+    // 'relatorios' e 'testes' já coincidem com as rotas
+];
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -71,19 +80,30 @@ $modulos_data = json_decode($modulos_json, true);
 
     <div class="app-logo">Slpires.COM</div>
     <div class="app-title">Painel de Módulos</div>
+
     <!-- [BLOCO] Exibe os módulos permitidos ao usuário -->
     <div class="app-btn-group" style="margin-top:1.5em;">
       <?php
-      foreach ($modulos_data['modulos'] as $modulo) {
-          // Padroniza para lowercase para comparar corretamente
-          if (in_array(strtolower($modulo['nome_tecnico']), $modulos_permitidos)) {
-              // Sempre roteia pelo front controller (index.php?pagina=nome_modulo)
-              $href = $base_url . '/index.php?pagina=' . strtolower($modulo['nome_tecnico']);
-              echo '<a class="app-btn" href="' . $href . '">' . htmlspecialchars($modulo['nome_amigavel']) . '</a>';
+      if (isset($modulos_data['modulos']) && is_array($modulos_data['modulos'])) {
+          foreach ($modulos_data['modulos'] as $modulo) {
+              $nomeTecnicoLower = strtolower($modulo['nome_tecnico'] ?? '');
+              if ($nomeTecnicoLower === '' || !in_array($nomeTecnicoLower, $modulos_permitidos, true)) {
+                  continue;
+              }
+
+              // Rota canônica (aplica mapeamento se houver)
+              $rota = $rotaMap[$nomeTecnicoLower] ?? $nomeTecnicoLower;
+
+              // Link sempre via front controller
+              $href = $action_base . '?r=' . $rota;
+              $rotulo = htmlspecialchars($modulo['nome_amigavel'] ?? $rota);
+
+              echo '<a class="app-btn" href="' . $href . '">' . $rotulo . '</a>';
           }
       }
       ?>
     </div>
+
     <!-- [INCLUSÃO] Rodapé dinâmico institucional com info do usuário -->
     <?php require_once __DIR__ . '/rodape_usuario.php'; ?>
   </div>
