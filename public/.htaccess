@@ -2,25 +2,39 @@
 # /tcc/public/.htaccess  (DEV e PRD, único)
 # ============================================
 
-RewriteEngine On
+<IfModule mod_rewrite.c>
+  RewriteEngine On
 
-# 1) Autodetecção de ambiente por Host
-SetEnv APP_ENV production
-SetEnvIf Host "^localhost(:[0-9]*)?$"        APP_ENV=development
-SetEnvIf Host "^127\.0\.0\.1(:[0-9]*)?$"     APP_ENV=development
+  # 1) Autodetecção de ambiente por Host
+  SetEnv APP_ENV production
+  SetEnvIf Host "^localhost(:[0-9]*)?$"        APP_ENV=development
+  SetEnvIf Host "^127\.0\.0\.1(:[0-9]*)?$"     APP_ENV=development
 
-# 2) Opções
-Options -Indexes -MultiViews
+  # 2) Opções de diretório/índice
+  Options -Indexes -MultiViews
+  DirectoryIndex index.php index.html
 
-# 3) HTTPS apenas em produção
-RewriteCond %{ENV:APP_ENV} =production
-RewriteCond %{HTTPS} !=on
-RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+  # 3) HTTPS apenas em produção (compatível com proxy/CDN)
+  RewriteCond %{ENV:APP_ENV} =production
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https [OR]
+  RewriteCond %{HTTP:X-Forwarded-Proto} ^$
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-# 4) Roteamento (front controller)
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^ index.php [L]
+  # 4) Roteamento (front controller)
+  #    - Se for arquivo/pasta real, entrega normalmente
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+  #    - Caso contrário, envia tudo para index.php
+  RewriteRule ^ index.php [L]
+
+  # 6) Variáveis de ambiente para o app (lidas no PHP)
+  RewriteCond %{ENV:APP_ENV} =production
+  RewriteRule .* - [E=APP_DEBUG:false]
+  RewriteCond %{ENV:APP_ENV} =development
+  RewriteRule .* - [E=APP_DEBUG:true]
+</IfModule>
 
 # 5) Bloqueio a arquivos sensíveis (Apache 2.4+)
 <IfModule mod_authz_core.c>
@@ -29,9 +43,8 @@ RewriteRule ^ index.php [L]
   </FilesMatch>
 </IfModule>
 
-# 6) Variáveis para o app (lidas no PHP)
-RewriteCond %{ENV:APP_ENV} =production
-RewriteRule .* - [E=APP_DEBUG:false]
-RewriteCond %{ENV:APP_ENV} =development
-RewriteRule .* - [E=APP_DEBUG:true]
-SetEnvIfNoCase . "^.*$" APP_DEBUG=%{ENV:APP_DEBUG}
+# Observação: se mod_env não estiver habilitado, as variáveis SetEnv/SetEnvIf
+# não serão propagadas. Nessa hipótese, o PHP deve inferir o ambiente pelo host.
+<IfModule !mod_env.c>
+  # (sem ação — apenas aviso)
+</IfModule>
