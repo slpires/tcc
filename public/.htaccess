@@ -1,50 +1,54 @@
 # ============================================
-# /tcc/public/.htaccess  (DEV e PRD, único)
+# /tcc/public/.htaccess  — Único (DEV e PRD)
 # ============================================
 
 <IfModule mod_rewrite.c>
   RewriteEngine On
 
-  # 1) Autodetecção de ambiente por Host
+  # -- 1) Autodetecção simples de ambiente por Host
+  #     DEV: localhost ou 127.0.0.1  |  PRD: demais hosts
   SetEnv APP_ENV production
-  SetEnvIf Host "^localhost(:[0-9]*)?$"        APP_ENV=development
-  SetEnvIf Host "^127\.0\.0\.1(:[0-9]*)?$"     APP_ENV=development
+  SetEnvIf Host "^localhost(:[0-9]*)?$"    APP_ENV=development
+  SetEnvIf Host "^127\.0\.0\.1(:[0-9]*)?$" APP_ENV=development
 
-  # 2) Opções de diretório/índice
+  # -- 2) Opções e índice padrão
+  #     MultiViews desativado para evitar conflito com rotas "amigáveis"
   Options -Indexes -MultiViews
   DirectoryIndex index.php index.html
 
-  # 3) HTTPS apenas em produção (compatível com proxy/CDN)
+  # -- 3) Bloqueio a arquivos sensíveis (Apache 2.4+)
+  <IfModule mod_authz_core.c>
+    <FilesMatch "\.(env|ini|log|sql|bak|old|sh|conf|git|gitignore|example)$">
+      Require all denied
+    </FilesMatch>
+  </IfModule>
+
+  # -- 4) HTTPS apenas em produção (compatível com proxy/CDN)
   RewriteCond %{ENV:APP_ENV} =production
   RewriteCond %{HTTPS} !=on
   RewriteCond %{HTTP:X-Forwarded-Proto} !https [OR]
   RewriteCond %{HTTP:X-Forwarded-Proto} ^$
   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
-  # 4) Roteamento (front controller)
-  #    - Se for arquivo/pasta real, entrega normalmente
+  # -- 5) Roteamento (Front Controller Pattern)
+  #     Se for arquivo ou diretório real, NÃO reescrever
   RewriteCond %{REQUEST_FILENAME} -f [OR]
   RewriteCond %{REQUEST_FILENAME} -d
   RewriteRule ^ - [L]
-  #    - Caso contrário, envia tudo para index.php
-  RewriteRule ^ index.php [L]
 
-  # 6) Variáveis de ambiente para o app (lidas no PHP)
+  #     Caso contrário, encaminhar para index.php preservando a querystring
+  RewriteRule ^ index.php [L,QSA]
+
+  # -- 6) Variáveis de ambiente consumidas pelo PHP (ex.: exibir erros em DEV)
   RewriteCond %{ENV:APP_ENV} =production
   RewriteRule .* - [E=APP_DEBUG:false]
   RewriteCond %{ENV:APP_ENV} =development
   RewriteRule .* - [E=APP_DEBUG:true]
 </IfModule>
 
-# 5) Bloqueio a arquivos sensíveis (Apache 2.4+)
-<IfModule mod_authz_core.c>
-  <FilesMatch "\.(env|ini|log|sql|bak|old|sh|conf|git|gitignore|example)$">
-    Require all denied
-  </FilesMatch>
-</IfModule>
-
-# Observação: se mod_env não estiver habilitado, as variáveis SetEnv/SetEnvIf
-# não serão propagadas. Nessa hipótese, o PHP deve inferir o ambiente pelo host.
+# Observação: se mod_env estiver desabilitado no provedor, as variáveis acima
+# podem ser ignoradas; o aplicativo já pode fazer detecção de ambiente em PHP
+# (ex.: /config/paths.php) usando o host/servidor como referência.
 <IfModule !mod_env.c>
-  # (sem ação — apenas aviso)
+  # (sem ação — anotação informativa)
 </IfModule>
