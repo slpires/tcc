@@ -37,8 +37,11 @@ if (isset($_GET['pagina'])) {
    ============================================================ */
 if (isset($_GET['r']) && $_GET['r'] !== '') {
 
-    // Rota por query string (?r=rota); padrão defensivo = 'sistema'
-    $route = $_GET['r'] ?? 'sistema';
+    /* [AJUSTE] Normalização e validação da rota
+       - Converte para minúsculas e remove espaços.
+       - Evita discrepâncias ('HOME', 'Simulação', etc.).
+       - Mantém padrão defensivo 'sistema' como fallback. */
+    $route = isset($_GET['r']) ? trim(strtolower($_GET['r'])) : 'sistema';
 
     // Mapa de rotas:
     //  - VIEWS: abrem a view correspondente.
@@ -68,8 +71,17 @@ if (isset($_GET['r']) && $_GET['r'] !== '') {
         require $file;
         exit;
     }
+
+    /* [AJUSTE] Melhoria no tratamento de rotas inválidas
+       - Define explicitamente o código HTTP 404.
+       - Utiliza view institucional (src/view/404.php) para resposta amigável.
+       - Mantém compatibilidade caso a view ainda não exista. */
     http_response_code(404);
-    echo 'Rota não encontrada.';
+    if (is_file(__DIR__ . '/../src/view/404.php')) {
+        require __DIR__ . '/../src/view/404.php';
+    } else {
+        echo 'Rota não encontrada.';
+    }
     exit;
 }
 
