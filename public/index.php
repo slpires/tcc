@@ -6,7 +6,7 @@
     Carrega caminhos dinâmicos e, quando aplicável, aciona o front controller.
 */
 
-/* [INCLUSÃO] Carrega definição do $base_url para assets e links institucionais
+/* [INCLUSÃO] Carrega definição do $base_url, $action_base e $url_base
    (necessário antes de qualquer <link> ou <script> que utilize $base_url) */
 require_once __DIR__ . '/../config/paths.php';
 
@@ -15,9 +15,80 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
-/* [BLOCO] Se não houver parâmetro ou ?pagina=home, renderiza a landing page;
-   caso contrário, delega o processamento ao front controller. */
-if (!isset($_GET['pagina']) || $_GET['pagina'] === 'home') {
+/* ============================================================
+   NORMALIZAÇÃO DE LEGADO (?pagina=...)
+   - Converte qualquer uso antigo para a rota nova ?r=sistema
+   ============================================================ */
+if (isset($_GET['pagina'])) {
+    $p = $_GET['pagina'];
+    // 'home' e 'sistema' antigos viram a rota nova 'sistema'
+    if ($p === 'home' || $p === 'sistema') {
+        header('Location: ' . $action_base . '?r=sistema', true, 302);
+        exit;
+    }
+    // Qualquer outro valor legado também direciona para a seleção
+    header('Location: ' . $action_base . '?r=sistema', true, 302);
+    exit;
+}
+
+/* ============================================================
+   [BLOCO C] ROTEADOR POR QUERY (?r=rota)
+   - Aciona quando houver parâmetro 'r'
+   ============================================================ */
+if (isset($_GET['r']) && $_GET['r'] !== '') {
+
+    /* [AJUSTE] Normalização e validação da rota
+       - Converte para minúsculas e remove espaços.
+       - Evita discrepâncias ('HOME', 'Simulação', etc.).
+       - Mantém padrão defensivo 'sistema' como fallback. */
+    $route = isset($_GET['r']) ? trim(strtolower($_GET['r'])) : 'sistema';
+
+    // Mapa de rotas:
+    //  - VIEWS: abrem a view correspondente.
+    //  - CONTROLLERS: delegam a execução ao controller correspondente.
+    $map = [
+        // VIEWS (home como alias temporário de sistema)
+        'home'    => __DIR__ . '/../src/view/sistema.php',
+        'sistema' => __DIR__ . '/../src/view/sistema.php',
+        'painel'  => __DIR__ . '/../src/view/painel_modulos.php',
+
+        // CONTROLLERS (rotas canônicas)
+        'perfil'      => __DIR__ . '/../src/controller/selecao_perfil.php',
+        'relatorios'  => __DIR__ . '/../src/controller/relatorios.php',
+        'creditos'    => __DIR__ . '/../src/controller/controle_credito.php',
+        'simulacao'   => __DIR__ . '/../src/controller/simulacao_folha.php',
+        'testes'      => __DIR__ . '/../src/controller/testes.php',
+        'logout'      => __DIR__ . '/../src/controller/logout.php',
+
+        // ALIASES (nomes técnicos legados vindos de views/JSON)
+        'simulacao_folha'  => __DIR__ . '/../src/controller/simulacao_folha.php',
+        'controle_credito' => __DIR__ . '/../src/controller/controle_credito.php',
+    ];
+
+    // Se a rota não existir no mapa, responde 404 (sem front_controller legado)
+    $file = $map[$route] ?? null;
+    if ($file && is_file($file)) {
+        require $file;
+        exit;
+    }
+
+    /* [AJUSTE] Melhoria no tratamento de rotas inválidas
+       - Define explicitamente o código HTTP 404.
+       - Utiliza view institucional (src/view/404.php) para resposta amigável.
+       - Mantém compatibilidade caso a view ainda não exista. */
+    http_response_code(404);
+    if (is_file(__DIR__ . '/../src/view/404.php')) {
+        require __DIR__ . '/../src/view/404.php';
+    } else {
+        echo 'Rota não encontrada.';
+    }
+    exit;
+}
+
+/* ============================================================
+   LANDING PAGE
+   - Sem 'r' → renderiza a landing institucional diretamente
+   ============================================================ */
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -111,8 +182,8 @@ if (!isset($_GET['pagina']) || $_GET['pagina'] === 'home') {
       <a class="github" href="https://github.com/slpires/tcc/wiki" target="_blank" rel="noopener noreferrer" aria-label="Consultar documentação técnica na Wiki">
         📘 Documentação Técnica (Wiki)
       </a>
-      <!-- [AJUSTE] usar $url_base para portabilidade DEV/PRD -->
-      <a class="github btn btn-mvp" href="<?= $url_base ?>/index.php?pagina=sistema" aria-label="Entrar no Sistema">
+      <!-- [AJUSTE] usar roteador centralizado -->
+      <a class="github btn btn-mvp" href="<?= $action_base ?>?r=sistema" aria-label="Entrar no Sistema">
         🚀 Entrar no MVP do Sistema
       </a>
     </div>
@@ -153,7 +224,3 @@ if (!isset($_GET['pagina']) || $_GET['pagina'] === 'home') {
 <?php
     // Fim da landing page
     exit;
-}
-
-/* [INCLUSÃO] Para qualquer outra página/rota, delega ao front controller */
-require_once __DIR__ . '/../src/controller/front_controller.php';

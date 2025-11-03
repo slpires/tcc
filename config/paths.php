@@ -1,75 +1,51 @@
 <?php
+declare(strict_types=1);
 /*
-    /config/paths.php
-    [VERSÃO REVISADA – 28/10/2025]
-    [PROJETO] SLPIRES.COM – TCC UFF (PoC)
-    [RESPONSÁVEL] Sérgio Luís de Oliveira Pires
+  /config/paths.php
+  [VERSÃO REVISADA – 30/10/2025]
+  SLPIRES.COM – TCC UFF (PoC)
 
-    [OBJETIVO]
-    Definir caminhos dinâmicos e portáveis para uso em views e controllers:
-      - $base_url       : caminho base para assets (CSS, JS, imagens, etc.)
-      - $controller_url : URL absoluta para controllers (action dos formulários)
-      - $url_base       : caminho de base para redirecionamentos HTTP
-
-    [CONTEXTO DE IMPLANTAÇÃO]
-    - DEV (XAMPP): o projeto reside em /tcc e a aplicação pública fica em /tcc/public
-    - PRD (HostGator): o subdomínio tcc.slpires.com aponta diretamente para /public_html/tcc/public
-      ⇒ portanto, em PRD a pasta /public já é a raiz do site.
-
-    [USO]
-      <link rel="stylesheet" href="<?= $base_url ?>/css/style.css">
-      <form action="<?= $controller_url ?>/selecao_perfil.php" method="post">
+  Expostas (sempre ABSOLUTAS):
+    - $base_url    : base pública para assets (css/js/img)
+    - $action_base : endpoint do front controller (/public/index.php)
+    - $url_base    : alias de base pública (igual a $base_url)
 */
 
-$host      = $_SERVER['SERVER_NAME'] ?? '';
-$http_host = $_SERVER['HTTP_HOST']   ?? $host;
-$is_local  = in_array($host, ['localhost', '127.0.0.1'], true);
+/* ---------- 1) Ambiente e protocolo ---------- */
+$http_host = $_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME'] ?? 'localhost');
 
-/* ------------------------------------------------------------------
-   [DETECÇÃO DE SUBPASTA – COMPATÍVEL COM O CÓDIGO ATUAL]
-   Mantém a lógica original apenas para DEV, preservando portabilidade.
------------------------------------------------------------------- */
-$base_path = '';
-if (!empty($_SERVER['SCRIPT_NAME'])) {
-    if (preg_match('#^(/[^/]+)/#', $_SERVER['SCRIPT_NAME'], $m)) {
-        $base_path = $m[1]; // em DEV tende a ser "/tcc"; em PRD, raiz do subdomínio
-    }
+$isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off');
+if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
+  $isHttps = (strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https');
+}
+$protocolo = $isHttps ? 'https' : 'http';
+
+/* ---------- 2) Descobrir a base pública atual ---------- */
+/* dirname('/tcc/public/index.php') => '/tcc/public'
+   dirname('/index.php')            => '/'  (normalizar para '') */
+$scriptDir = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/index.php'));
+$scriptDir = rtrim($scriptDir, '/');
+$publicBase = ($scriptDir === '' || $scriptDir === '/') ? '' : $scriptDir;
+
+/* Permite override explícito via servidor (opcional) */
+$override = getenv('APP_PUBLIC_BASE') ?: ($_SERVER['APP_PUBLIC_BASE'] ?? null);
+if (is_string($override) && $override !== '') {
+  $publicBase = '/' . trim($override, '/');
 }
 
-/* ------------------------------------------------------------------
-   [RESOLUÇÃO DOS CAMINHOS]
-   - Em DEV: usa "/tcc/public" para assets e "/tcc/src/controller" para actions
-   - Em PRD: "/public" já é a raiz; assets ficam em "" e controllers expostos por "/src/controller"
------------------------------------------------------------------- */
-if ($is_local) {
-    // Ambiente de Desenvolvimento (XAMPP)
-    $base_url       = $base_path . '/public';
-    $controller_url = "http://{$http_host}{$base_path}/src/controller";
-    $url_base       = $base_path . '/public';
-} else {
-    // Ambiente de Produção (HostGator)
-    $protocolo      = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+/* ---------- 3) Montagem das variáveis ABSOLUTAS ---------- */
+$absBase = "{$protocolo}://{$http_host}{$publicBase}";
 
-    // Em PRD, NÃO concatenar "/public" nos assets: o DocumentRoot já aponta para /public
-    $base_url       = '';
+$base_url    = $absBase;               // ex.: http://localhost/tcc/public  |  https://tcc.slpires.com
+$action_base = $absBase . '/index.php';// ex.: http://localhost/tcc/public/index.php
+$url_base    = $absBase;               // alias usado em redirecionamentos
 
-    // Mantém a mesma convenção de roteamento do projeto para os controllers
-    // (se futuramente os controllers forem roteados via front-controller, ajustar aqui)
-    $controller_url = "{$protocolo}://{$http_host}/src/controller";
+/* ---------- 4) Higiene: remover legado ---------- */
+if (isset($controller_url)) { unset($controller_url); }
 
-    // Base para redirecionamentos internos
-    $url_base       = '';
+/* ---------- 5) Debug opcional ---------- */
+$appDebug = getenv('APP_DEBUG') ?: ($_SERVER['APP_DEBUG'] ?? null);
+if ($appDebug && filter_var($appDebug, FILTER_VALIDATE_BOOLEAN)) {
+  // Descomente se precisar inspecionar rapidamente:
+  // error_log('[paths.php] base_url='.$base_url.' action_base='.$action_base.' scriptDir='.$scriptDir);
 }
-
-/* ------------------------------------------------------------------
-   [OBSERVAÇÕES]
-   1) Inclua este arquivo ANTES de referenciar assets ou definir actions.
-   2) Teste rápido:
-        - DEV:  echo $base_url;       // esperado: /tcc/public
-                 echo $controller_url; // esperado: http://localhost/tcc/src/controller
-        - PRD:  echo $base_url;       // esperado: (string vazia)
-                 echo $controller_url; // esperado: https://tcc.slpires.com/src/controller
-   3) Caso a aplicação adote front-controller único (ex.: /public/index.php?route=...),
-      adaptar $controller_url para apontar para a rota pública correspondente.
------------------------------------------------------------------- */
-?>
