@@ -23,6 +23,21 @@
     </FilesMatch>
   </IfModule>
 
+  # -- 3a) Mitigação específica: bloquear 'error_log' (sem extensão) e variações
+  #     Cobertura adicional caso o provedor gere nomes como error_log.1, error_log-YYYYMMDD etc.
+  <IfModule mod_authz_core.c>
+    <Files "error_log">
+      Require all denied
+    </Files>
+    <FilesMatch "^(error_log(\.[0-9]+|[-_.0-9]+)?)$">
+      Require all denied
+    </FilesMatch>
+  </IfModule>
+
+  #     Fallback via reescrita (caso <Files> seja ignorado em compartilhado)
+  RewriteRule ^error_log(\..*)?$ - [F,L]
+  RewriteRule ^error[-_.]?log([0-9\-_.].*)?$ - [F,L]
+
   # -- 4) HTTPS apenas em produção (compatível com proxy/CDN)
   RewriteCond %{ENV:APP_ENV} =production
   RewriteCond %{HTTPS} !=on
