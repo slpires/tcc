@@ -19,10 +19,11 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
    NORMALIZAÇÃO DE LEGADO (?pagina=...)
    - Converte qualquer uso antigo para a rota nova ?r=sistema
    ============================================================ */
-if (isset($_GET['pagina'])) {
-    $p = $_GET['pagina'];
+$pagina = filter_input(INPUT_GET, 'pagina', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+if ($pagina !== null && $pagina !== false) {
     // 'home' e 'sistema' antigos viram a rota nova 'sistema'
-    if ($p === 'home' || $p === 'sistema') {
+    if ($pagina === 'home' || $pagina === 'sistema') {
         header('Location: ' . $action_base . '?r=sistema', true, 302);
         exit;
     }
@@ -35,13 +36,18 @@ if (isset($_GET['pagina'])) {
    [BLOCO C] ROTEADOR POR QUERY (?r=rota)
    - Aciona quando houver parâmetro 'r'
    ============================================================ */
-if (isset($_GET['r']) && $_GET['r'] !== '') {
+$routeRaw = filter_input(INPUT_GET, 'r', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+
+if ($routeRaw !== null && $routeRaw !== false && $routeRaw !== '') {
 
     /* [AJUSTE] Normalização e validação da rota
        - Converte para minúsculas e remove espaços.
        - Evita discrepâncias ('HOME', 'Simulação', etc.).
        - Mantém padrão defensivo 'sistema' como fallback. */
-    $route = isset($_GET['r']) ? trim(strtolower($_GET['r'])) : 'sistema';
+    $route = trim(strtolower($routeRaw));
+    if ($route === '') {
+        $route = 'sistema';
+    }
 
     // Mapa de rotas:
     //  - VIEWS: abrem a view correspondente.

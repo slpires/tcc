@@ -37,13 +37,19 @@ require_once __DIR__ . '/../model/testes_service.php';
  */
 function testes_index(): void
 {
-    // [ENTRADA] Captura de filtros via GET
+    // [ENTRADA] Captura de filtros via GET (sanitizados)
+    $modulo       = filter_input(INPUT_GET, 'modulo', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
+    $tipo_teste   = filter_input(INPUT_GET, 'tipo_teste', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
+    $prioridade   = filter_input(INPUT_GET, 'prioridade', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
+    $status_teste = filter_input(INPUT_GET, 'status_teste', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
+    $ativo        = filter_input(INPUT_GET, 'ativo', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
+
     $filtro = [
-        'modulo'       => $_GET['modulo']       ?? '',
-        'tipo_teste'   => $_GET['tipo_teste']   ?? '',
-        'prioridade'   => $_GET['prioridade']   ?? '',
-        'status_teste' => $_GET['status_teste'] ?? '',
-        'ativo'        => $_GET['ativo']        ?? '',
+        'modulo'       => $modulo,
+        'tipo_teste'   => $tipo_teste,
+        'prioridade'   => $prioridade,
+        'status_teste' => $status_teste,
+        'ativo'        => $ativo,
     ];
 
     // [PROCESSO] Consulta ao catálogo de testes
@@ -57,7 +63,7 @@ function testes_index(): void
 
     // [SAÍDA] Variáveis esperadas pela view
     $titulo_pagina     = 'Módulo de Testes – Catálogo';
-    $mensagem_execucao = $_GET['msg'] ?? '';
+    $mensagem_execucao = filter_input(INPUT_GET, 'msg', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
 
     // [VIEW] Renderiza a view principal do módulo TESTES
     require __DIR__ . '/../view/testes.php';
@@ -88,14 +94,25 @@ function testes_run(int $id_teste): void
     $entrada_json  = '';
     $esperado_json = '';
 
+    // Proteção simples contra id inválido
+    if ($id_teste <= 0) {
+        $erro          = 'Identificador de teste inválido.';
+        $titulo_pagina = 'Execução de Teste – Módulo de Testes';
+        require __DIR__ . '/../view/testes_execucao.php';
+        return;
+    }
+
     try {
         // 1) Carregar metadados do teste
         $caso = carregarTeste($id_teste);
 
         // 2) Capturar entrada/esperado enviados via formulário (opcional)
         if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $entrada_json  = $_POST['entrada_json']  ?? '';
-            $esperado_json = $_POST['esperado_json'] ?? '';
+            $entrada_json  = (string) (filter_input(INPUT_POST, 'entrada_json', FILTER_UNSAFE_RAW)  ?? '');
+            $esperado_json = (string) (filter_input(INPUT_POST, 'esperado_json', FILTER_UNSAFE_RAW) ?? '');
+
+            $entrada_json  = trim($entrada_json);
+            $esperado_json = trim($esperado_json);
 
             $entradaForm  = $entrada_json  !== '' ? json_decode($entrada_json, true)  : null;
             $esperadoForm = $esperado_json !== '' ? json_decode($esperado_json, true) : null;
@@ -264,23 +281,33 @@ function testes_replay(string $modulo, string $tipo_teste): void
     ser adaptado ou removido. Para o MVP, ele garante funcionamento
     independente.
 */
-$acao = $_GET['acao'] ?? 'index';
+
+// [ENTRADA] Ação de gatilho (sanitizada)
+$acao = filter_input(INPUT_GET, 'acao', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+if ($acao === null || $acao === false || $acao === '') {
+    $acao = 'index';
+}
 
 switch ($acao) {
     case 'run':
-        $id_teste = isset($_GET['id_teste']) ? (int) $_GET['id_teste'] : 0;
-        testes_run($id_teste);
+        $id_teste = filter_input(
+            INPUT_GET,
+            'id_teste',
+            FILTER_VALIDATE_INT,
+            ['options' => ['default' => 0, 'min_range' => 0]]
+        );
+        testes_run((int) $id_teste);
         break;
 
     case 'runAll':
-        $modulo     = $_GET['modulo']     ?? '';
-        $tipo_teste = $_GET['tipo_teste'] ?? '';
+        $modulo     = filter_input(INPUT_GET, 'modulo', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
+        $tipo_teste = filter_input(INPUT_GET, 'tipo_teste', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
         testes_runAll($modulo, $tipo_teste);
         break;
 
     case 'replay':
-        $modulo     = $_GET['modulo']     ?? '';
-        $tipo_teste = $_GET['tipo_teste'] ?? '';
+        $modulo     = filter_input(INPUT_GET, 'modulo', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
+        $tipo_teste = filter_input(INPUT_GET, 'tipo_teste', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
         testes_replay($modulo, $tipo_teste);
         break;
 
