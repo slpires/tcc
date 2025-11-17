@@ -1,14 +1,14 @@
 <?php
 /*
     /src/model/testes_service.php
-    [INCLUSÃO]
+    [MODEL / SERVICE]
     Serviço central do MÓDULO TESTES do sistema SLPIRES.COM (TCC UFF).
 
     Responsabilidades principais:
-    - Consultar o catálogo oficial de casos de teste (tabela TESTE_AUTOMATIZADO).
+    - Consultar o catálogo oficial de casos de teste (tabela teste_automatizado).
     - Carregar casos individuais para execução.
     - Delegar a execução aos adapters específicos de cada módulo.
-    - Registrar resultados na tabela TESTE_EXECUCAO e em arquivos de log.
+    - Registrar resultados na tabela teste_execucao e em arquivos de log.
     - Atualizar o status consolidado de cada teste no catálogo.
 
     Importante:
@@ -28,8 +28,8 @@ const TEST_STATUS_SKIP  = 'SKIP';
  * listarTestes
  * ------------
  * Finalidade:
- *   Retornar a lista de casos de teste cadastrados em TESTE_AUTOMATIZADO,
- *   aplicando filtros opcionais.
+ *   Retornar a lista de casos de teste cadastrados em teste_automatizado,
+ *   aplicando filtros opcionais e incluindo dados da última execução.
  *
  * Parâmetros:
  *   $filtro (array opcional) com chaves:
@@ -37,10 +37,16 @@ const TEST_STATUS_SKIP  = 'SKIP';
  *     - 'tipo_teste'   => string
  *     - 'prioridade'   => string ('alta','media','baixa')
  *     - 'status_teste' => string (enum da tabela)
+ *     - 'cod_teste'    => string
  *     - 'ativo'        => int (1 ou 0)
  *
  * Retorno:
- *   array de arrays associativos.
+ *   array de arrays associativos com, no mínimo:
+ *     - id_teste, cod_teste, modulo, cenario, tipo_teste,
+ *       prioridade, status_teste, descricao_teste, ativo,
+ *       criado_em, atualizado_em,
+ *       executado_em (última execução, se existir),
+ *       mensagem    (mensagem da última execução, se existir)
  */
 function listarTestes(array $filtro = []): array
 {
@@ -48,16 +54,37 @@ function listarTestes(array $filtro = []): array
 
     $sql = "
         SELECT
-            id_teste,
-            modulo,
-            cenario,
-            tipo_teste,
-            prioridade,
-            status_teste,
-            ativo,
-            criado_em,
-            atualizado_em
-        FROM teste_automatizado
+            ta.id_teste,
+            ta.cod_teste,
+            ta.modulo,
+            ta.cenario,
+            ta.tipo_teste,
+            ta.prioridade,
+            ta.status_teste,
+            ta.descricao_teste,
+            ta.ativo,
+            ta.criado_em,
+            ta.atualizado_em,
+            ult.executado_em,
+            ult.mensagem
+        FROM teste_automatizado ta
+        LEFT JOIN (
+            SELECT
+                e1.id_teste,
+                e1.executado_em,
+                e1.mensagem
+            FROM teste_execucao e1
+            INNER JOIN (
+                SELECT
+                    id_teste,
+                    MAX(executado_em) AS max_exec
+                FROM teste_execucao
+                GROUP BY id_teste
+            ) e2
+                ON e2.id_teste = e1.id_teste
+               AND e2.max_exec = e1.executado_em
+        ) ult
+          ON ult.id_teste = ta.id_teste
         WHERE 1 = 1
     ";
 
@@ -66,41 +93,49 @@ function listarTestes(array $filtro = []): array
 
     // Filtros opcionais
     if (!empty($filtro['modulo'])) {
-        $sql      .= " AND modulo = ?";
+        $sql      .= " AND ta.modulo = ?";
         $types    .= 's';
-        $params[]  = $filtro['modulo'];
+        $params[]  = (string) $filtro['modulo'];
     }
 
     if (!empty($filtro['tipo_teste'])) {
-        $sql      .= " AND tipo_teste = ?";
+        $sql      .= " AND ta.tipo_teste = ?";
         $types    .= 's';
-        $params[]  = $filtro['tipo_teste'];
+        $params[]  = (string) $filtro['tipo_teste'];
     }
 
     if (!empty($filtro['prioridade'])) {
-        $sql      .= " AND prioridade = ?";
+        $sql      .= " AND ta.prioridade = ?";
         $types    .= 's';
         $params[]  = (string) $filtro['prioridade'];
     }
 
     if (!empty($filtro['status_teste'])) {
-        $sql      .= " AND status_teste = ?";
+        $sql      .= " AND ta.status_teste = ?";
         $types    .= 's';
-        $params[]  = $filtro['status_teste'];
+        $params[]  = (string) $filtro['status_teste'];
+    }
+
+    if (!empty($filtro['cod_teste'])) {
+        $sql      .= " AND ta.cod_teste = ?";
+        $types    .= 's';
+        $params[]  = (string) $filtro['cod_teste'];
     }
 
     if (isset($filtro['ativo']) && $filtro['ativo'] !== '') {
-        $sql      .= " AND ativo = ?";
+        $sql      .= " AND ta.ativo = ?";
         $types    .= 'i';
         $params[]  = (int) $filtro['ativo'];
     }
 
     // Ordenação padrão: prioridade > módulo > cenário
-    $sql .= " ORDER BY prioridade DESC, modulo ASC, cenario ASC";
+    $sql .= " ORDER BY ta.prioridade DESC, ta.modulo ASC, ta.cenario ASC";
 
     $stmt = mysqli_prepare($conn, $sql);
     if ($stmt === false) {
-        throw new Exception('Erro ao preparar consulta de testes: ' . mysqli_error($conn));
+        $erro = mysqli_error($conn);
+        mysqli_close($conn);
+        throw new Exception('Erro ao preparar consulta de testes: ' . $erro);
     }
 
     if ($types !== '') {
@@ -111,7 +146,10 @@ function listarTestes(array $filtro = []): array
 
     $result = mysqli_stmt_get_result($stmt);
     if ($result === false) {
-        throw new Exception('Erro ao executar consulta de testes: ' . mysqli_error($conn));
+        $erro = mysqli_error($conn);
+        mysqli_stmt_close($stmt);
+        mysqli_close($conn);
+        throw new Exception('Erro ao executar consulta de testes: ' . $erro);
     }
 
     $lista = [];
@@ -127,16 +165,52 @@ function listarTestes(array $filtro = []): array
 }
 
 /**
+ * listarCodigosTestes
+ * -------------------
+ * Finalidade:
+ *   Retornar uma lista com todos os códigos de teste (cod_teste)
+ *   ativos no catálogo, em ordem alfabética.
+ *
+ * Retorno:
+ *   array de strings.
+ */
+function listarCodigosTestes(): array
+{
+    $conn = conectar();
+
+    $sql = "
+        SELECT DISTINCT cod_teste
+          FROM teste_automatizado
+         WHERE ativo = 1
+         ORDER BY cod_teste ASC
+    ";
+
+    $result = mysqli_query($conn, $sql);
+    if ($result === false) {
+        $erro = mysqli_error($conn);
+        mysqli_close($conn);
+        throw new Exception('Erro ao listar códigos de teste: ' . $erro);
+    }
+
+    $codigos = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $codigo = isset($row['cod_teste']) ? trim((string) $row['cod_teste']) : '';
+        if ($codigo !== '') {
+            $codigos[] = $codigo;
+        }
+    }
+
+    mysqli_free_result($result);
+    mysqli_close($conn);
+
+    return $codigos;
+}
+
+/**
  * carregarTeste
  * -------------
  * Finalidade:
- *   Carregar um caso de teste específico do catálogo TESTE_AUTOMATIZADO.
- *
- * Observação:
- *   A tabela TESTE_AUTOMATIZADO guarda metadados do teste
- *   (módulo, cenário, prioridade, tipo_teste etc.).
- *   Os payloads de entrada/esperado são recebidos pelo controller/view
- *   e registrados em TESTE_EXECUCAO no momento da execução.
+ *   Carregar um caso de teste específico do catálogo teste_automatizado.
  *
  * Parâmetros:
  *   $id_teste (int)
@@ -154,6 +228,7 @@ function carregarTeste(int $id_teste): array
     $sql = "
         SELECT
             id_teste,
+            cod_teste,
             modulo,
             cenario,
             tipo_teste,
@@ -170,7 +245,9 @@ function carregarTeste(int $id_teste): array
 
     $stmt = mysqli_prepare($conn, $sql);
     if ($stmt === false) {
-        throw new Exception('Erro ao preparar consulta de teste: ' . mysqli_error($conn));
+        $erro = mysqli_error($conn);
+        mysqli_close($conn);
+        throw new Exception('Erro ao preparar consulta de teste: ' . $erro);
     }
 
     mysqli_stmt_bind_param($stmt, 'i', $id_teste);
@@ -178,7 +255,10 @@ function carregarTeste(int $id_teste): array
 
     $result = mysqli_stmt_get_result($stmt);
     if ($result === false) {
-        throw new Exception('Erro ao executar consulta de teste: ' . mysqli_error($conn));
+        $erro = mysqli_error($conn);
+        mysqli_stmt_close($stmt);
+        mysqli_close($conn);
+        throw new Exception('Erro ao executar consulta de teste: ' . $erro);
     }
 
     $dados = mysqli_fetch_assoc($result);
@@ -191,16 +271,6 @@ function carregarTeste(int $id_teste): array
         throw new Exception('Caso de teste não encontrado: ID ' . $id_teste);
     }
 
-    /*
-        Nota:
-        - $dados NÃO possui entrada_json nem esperado_json, pois estes
-          não fazem parte da tabela TESTE_AUTOMATIZADO neste momento.
-        - O controller pode completar $dados com:
-            $dados['entrada']  = [...];
-            $dados['esperado'] = [...];
-          antes de chamar executarTeste().
-    */
-
     return $dados;
 }
 
@@ -210,11 +280,12 @@ function carregarTeste(int $id_teste): array
  * Finalidade:
  *   - Resolver o adapter correto para o módulo.
  *   - Delegar a execução para o adapter.
- *   - Registrar o resultado (tabela TESTE_EXECUCAO) e log (arquivo).
+ *   - Registrar o resultado (tabela teste_execucao) e log (arquivo).
+ *   - Retornar estrutura compatível com as views de resultado.
  *
  * Parâmetros:
- *   $caso (array): normalmente resultado de carregarTeste(), podendo
- *                  conter também:
+ *   $caso (array): normalmente resultado de carregarTeste().
+ *                  Pode conter, opcionalmente:
  *      - 'entrada'  => array|null (payload de entrada)
  *      - 'esperado' => array|null (resultado esperado)
  *
@@ -224,12 +295,25 @@ function carregarTeste(int $id_teste): array
  *      - 'log'       => bool (default true)
  *
  * Retorno:
- *   array com:
+ *   array $resultado compatível com a view testes_resultado.php:
+ *      - codigo_teste
+ *      - rotulo
+ *      - titulo
+ *      - objetivo
+ *      - ok
+ *      - mensagem
+ *      - inputs
+ *      - expected
+ *      - items
+ *      - summary
+ *
+ *   + campos adicionais usados internamente:
  *      - status_execucao
  *      - saida_json
- *      - mensagem
  *      - duracao_ms
  *      - dry_run
+ *      - entrada
+ *      - esperado
  */
 function executarTeste(array $caso, array $opcoes = []): array
 {
@@ -244,7 +328,7 @@ function executarTeste(array $caso, array $opcoes = []): array
         : true;
 
     $registrar = array_key_exists('registrar', $opcoes) ? (bool) $opcoes['registrar'] : true;
-    $log       = array_key_exists('log', $opcoes)       ? (bool) $opcoes['log']       : true;
+    $log       = array_key_exists('log',       $opcoes) ? (bool) $opcoes['log']       : true;
 
     // Resolução do adapter responsável pelo módulo
     $adapter = testes_resolver_adapter($modulo);
@@ -259,13 +343,14 @@ function executarTeste(array $caso, array $opcoes = []): array
 
     try {
         /*
-            Chamada padrão ao adapter:
-            - Função: <modulo>_run_test_case(array $caso, array $opcoes): array
-
-            O adapter deve retornar um array com ao menos:
+            Convenção de retorno do adapter:
             - 'status_execucao' => PASS|FAIL|ERROR|SKIP
             - 'saida'           => mixed (payload de saída)
-            - 'mensagem'        => string (mensagem técnica)
+            - 'mensagem'        => string (mensagem técnica/resumida)
+
+            Opcionalmente, pode retornar:
+            - 'items'   => array (itens verificados)
+            - 'summary' => string (síntese geral)
         */
         $resultadoAdapter = call_user_func(
             $adapter['run'],
@@ -281,6 +366,13 @@ function executarTeste(array $caso, array $opcoes = []): array
         $saidaPayload   = $resultadoAdapter['saida']          ?? null;
         $mensagem       = $resultadoAdapter['mensagem']       ?? '';
 
+        $items   = isset($resultadoAdapter['items']) && is_array($resultadoAdapter['items'])
+            ? $resultadoAdapter['items']
+            : [];
+        $summary = isset($resultadoAdapter['summary'])
+            ? (string) $resultadoAdapter['summary']
+            : '';
+
         $saidaJson = json_encode($saidaPayload, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
     } catch (Throwable $e) {
@@ -288,48 +380,68 @@ function executarTeste(array $caso, array $opcoes = []): array
         $statusExecucao = TEST_STATUS_ERROR;
         $saidaJson      = null;
         $mensagem       = 'Exceção na execução do teste: ' . $e->getMessage();
+        $items          = [];
+        $summary        = '';
     }
 
     $duracaoMs = (int) round((microtime(true) - $inicio) * 1000);
 
-    $resumo = [
+    // Metadados de exibição (view)
+    $codigoTeste = (string) (
+        $caso['cod_teste']
+        ?? $caso['codigo_teste']
+        ?? $caso['codigo']
+        ?? $caso['id_teste']
+        ?? ''
+    );
+    $rotulo   = (string) ($caso['rotulo']          ?? $codigoTeste);
+    $titulo   = (string) ($caso['descricao_teste'] ?? $caso['cenario'] ?? '');
+    $objetivo = (string) ($caso['descricao_teste'] ?? '');
+
+    $resultado = [
+        // Metadados para a view
+        'codigo_teste' => $codigoTeste,
+        'rotulo'       => $rotulo,
+        'titulo'       => $titulo,
+        'objetivo'     => $objetivo,
+        'ok'           => ($statusExecucao === TEST_STATUS_PASS),
+        'mensagem'     => $mensagem,
+        'inputs'       => is_array($entrada)  ? $entrada  : [],
+        'expected'     => is_array($esperado) ? $esperado : [],
+        'items'        => $items,
+        'summary'      => $summary,
+
+        // Campos técnicos auxiliares
         'status_execucao' => $statusExecucao,
         'saida_json'      => $saidaJson,
-        'mensagem'        => $mensagem,
         'duracao_ms'      => $duracaoMs,
         'dry_run'         => $dryRun ? 1 : 0,
+        'entrada'         => $entrada,
+        'esperado'        => $esperado,
     ];
 
-    // Persistência em TESTE_EXECUCAO
+    // Persistência em teste_execucao
     if ($registrar) {
         registrarResultado(
             (int) $caso['id_teste'],
-            [
-                'status_execucao' => $statusExecucao,
-                'entrada'         => $entrada,
-                'esperado'        => $esperado,
-                'saida_json'      => $saidaJson,
-                'mensagem'        => $mensagem,
-                'duracao_ms'      => $duracaoMs,
-                'dry_run'         => $dryRun ? 1 : 0,
-            ]
+            $resultado
         );
     }
 
     // Log em arquivo texto
     if ($log) {
-        testes_registrar_log($caso, $resumo, $entrada, $esperado);
+        testes_registrar_log($caso, $resultado, $entrada, $esperado);
     }
 
-    return $resumo;
+    return $resultado;
 }
 
 /**
  * registrarResultado
  * ------------------
  * Finalidade:
- *   Inserir um registro em TESTE_EXECUCAO e atualizar o status consolidado
- *   do teste em TESTE_AUTOMATIZADO.
+ *   Inserir um registro em teste_execucao e atualizar o status consolidado
+ *   do teste em teste_automatizado.
  *
  * Parâmetros:
  *   $id_teste  (int)
@@ -360,7 +472,9 @@ function registrarResultado(int $id_teste, array $resultado): int
 
     $stmt = mysqli_prepare($conn, $sqlInsert);
     if ($stmt === false) {
-        throw new Exception('Erro ao preparar insert de execução de teste: ' . mysqli_error($conn));
+        $erro = mysqli_error($conn);
+        mysqli_close($conn);
+        throw new Exception('Erro ao preparar insert de execução de teste: ' . $erro);
     }
 
     $entradaJson  = json_encode($resultado['entrada']  ?? null, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
@@ -398,12 +512,9 @@ function registrarResultado(int $id_teste, array $resultado): int
     mysqli_stmt_close($stmt);
 
     /*
-        [AJUSTE CRÍTICO]
-        ----------------
         Mapear o status_execucao (PASS/FAIL/ERROR/SKIP) para o ENUM de
-        status_teste em TESTE_AUTOMATIZADO:
+        status_teste em teste_automatizado:
           - 'nao_executado'
-          - 'executando'
           - 'aprovado'
           - 'reprovado'
     */
@@ -434,8 +545,9 @@ function registrarResultado(int $id_teste, array $resultado): int
 
     $stmtUpd = mysqli_prepare($conn, $sqlUpdate);
     if ($stmtUpd === false) {
+        $erro = mysqli_error($conn);
         mysqli_close($conn);
-        throw new Exception('Erro ao preparar update de status de teste: ' . mysqli_error($conn));
+        throw new Exception('Erro ao preparar update de status de teste: ' . $erro);
     }
 
     mysqli_stmt_bind_param($stmtUpd, 'si', $statusCatalogo, $id_teste);

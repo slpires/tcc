@@ -4,8 +4,10 @@ USE tcc_slpires;
 -- SCRIPT DE CRIAÇÃO / RECRIAÇÃO DA TABELA TESTE_AUTOMATIZADO
 -- Projeto : SLPIRES.COM – MVP TCC UFF
 -- Ambiente: Desenvolvimento (MariaDB 10.4.x)
--- Data    : 2025-11-13 (Atualização)
+-- Data    : 2025-11-16 (Atualização Ajustada)
 -- Autor   : Sérgio Luís de Oliveira Pires
+-- Ajustes : Inclusão de cod_teste (NOT NULL, UNIQUE)
+--           Remoção do valor 'executando' do ENUM status_teste
 -- =============================================================================
 -- Objetivo:
 --   Recriar a tabela TESTE_AUTOMATIZADO como CATÁLOGO OFICIAL DE CASOS DE TESTE,
@@ -13,9 +15,8 @@ USE tcc_slpires;
 --   prioridades. O histórico de execuções ficará em TESTE_EXECUCAO.
 --
 -- Notas:
---   - Este script deve ser executado apenas em AMBIENTE DEV.
---   - Remove a tabela anterior e recria toda a estrutura.
---   - Mantém compatibilidade com a FK para PERFIL_USUARIO.
+--   - Executar apenas em AMBIENTE DEV.
+--   - Tabela é removida e recriada integralmente.
 -- =============================================================================
 
 SET FOREIGN_KEY_CHECKS = 0;
@@ -25,8 +26,11 @@ SET FOREIGN_KEY_CHECKS = 1;
 CREATE TABLE teste_automatizado (
     id_teste INT NOT NULL AUTO_INCREMENT,
 
+    -- Código formal do caso de teste (lei de formação do projeto)
+    cod_teste VARCHAR(20) NOT NULL,
+
     -- Metadados do caso de teste
-    modulo        VARCHAR(40)  NOT NULL,   -- Ex.: SIMULACAO_FOLHA, CONTROLE_CREDITO, INFRA
+    modulo        VARCHAR(40)  NOT NULL,   -- Ex.: SIMULACAO_FOLHA, CONTROLE_CREDITO, TE
     cenario       VARCHAR(60)  NOT NULL,   -- Ex.: calc, integration, sanity
     prioridade    ENUM('alta','media','baixa') NOT NULL DEFAULT 'media',
 
@@ -36,10 +40,9 @@ CREATE TABLE teste_automatizado (
     -- Classificação do tipo de teste
     tipo_teste ENUM('unitario','integrado','exibicao') NOT NULL,
 
-    -- Status global do caso (agregado da última execução)
+    -- Status da última execução (sem 'executando')
     status_teste ENUM(
         'nao_executado',
-        'executando',
         'aprovado',
         'reprovado'
     ) NOT NULL DEFAULT 'nao_executado',
@@ -62,13 +65,15 @@ CREATE TABLE teste_automatizado (
         FOREIGN KEY (id_perfil_responsavel)
         REFERENCES perfil_usuario(id_perfil)
         ON DELETE RESTRICT
-        ON UPDATE CASCADE
+        ON UPDATE CASCADE,
+
+    UNIQUE KEY idx_teste_cod_teste (cod_teste)
 )
 ENGINE=InnoDB
 DEFAULT CHARSET=utf8mb4
 COLLATE=utf8mb4_unicode_ci
-COMMENT='Catálogo oficial de casos de teste automatizado (MÓDULO TESTES SLPIRES.COM), vinculado ao PERFIL_USUARIO.';
+COMMENT='Catálogo oficial de casos de teste automatizado (MÓDULO TESTES SLPIRES.COM).';
 
--- Índice funcional para listagens e filtros no MÓDULO TESTES
+-- Índice funcional para listagens e filtros
 CREATE INDEX idx_teste_catalogo_modulo
     ON teste_automatizado (modulo, cenario, tipo_teste, prioridade);

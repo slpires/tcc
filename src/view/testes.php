@@ -2,33 +2,61 @@
 /*
     /src/view/testes.php
     [VIEW]
-    Interface do MÓDULO TESTES do sistema SLPIRES.COM (TCC UFF).
+    Interface simplificada do MÓDULO TESTES do sistema SLPIRES.COM (TCC UFF).
 
-    Responsabilidades:
-    - Exibir o catálogo de casos de teste automatizados.
-    - Permitir filtro por módulo, tipo de teste, prioridade, status e ativo/inativo.
-    - Oferecer ações em lote: execução (runAll) e replay de reprovados.
-    - Manter identidade visual e rodapé padronizados com os demais módulos.
+    Responsabilidades após simplificação:
+    - Exibir apenas o filtro "Código do teste";
+    - Exibir descrição detalhada do teste selecionado;
+    - Permitir execução individual do teste;
+    - Manter cabeçalho e rodapé institucionais padronizados.
 */
 
-/* [INCLUSÃO] Verificação de permissão de acesso ao módulo (perfil administrador) */
+/* [INCLUSÃO] Verificação de permissão de acesso ao módulo */
 require_once __DIR__ . '/../controller/verificar_permissao.php';
 
 /* [INCLUSÃO] Caminhos dinâmicos ($base_url, $action_base, $url_base) */
 require_once __DIR__ . '/../../config/paths.php';
 
-/* [NORMALIZAÇÃO] Variáveis esperadas do controller (fallback seguro) */
-$titulo_pagina     = isset($titulo_pagina) ? (string) $titulo_pagina : 'Módulo de Testes – Catálogo';
+/* [NORMALIZAÇÃO] Variáveis esperadas do controller */
+$titulo_pagina     = isset($titulo_pagina)     ? (string) $titulo_pagina     : 'Módulo de Testes – Catálogo';
 $mensagem_execucao = isset($mensagem_execucao) ? (string) $mensagem_execucao : '';
-$erro              = isset($erro) ? $erro : '';
-$filtro            = isset($filtro) && is_array($filtro) ? $filtro : [];
-$testes            = isset($testes) && is_array($testes) ? $testes : [];
+$erro              = isset($erro)              ? $erro                       : '';
+$filtro            = isset($filtro) && is_array($filtro) ? $filtro           : [];
+$codigos_teste     = isset($codigos_teste) && is_array($codigos_teste) ? $codigos_teste : [];
+$testes            = isset($testes) && is_array($testes) ? $testes           : [];
 
-/* Helper simples para escapar saída em HTML */
+// Pode ou não vir do controller; aqui garantimos um fallback seguro
+$teste_selecionado = (isset($teste_selecionado) && is_array($teste_selecionado))
+    ? $teste_selecionado
+    : null;
+
+/* Caminho base */
+$action_base = isset($action_base) ? (string) $action_base : 'index.php';
+
+/* Função auxiliar de escapamento */
 if (!function_exists('e')) {
-    function e(?string $v): string
-    {
-        return htmlspecialchars((string) $v, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    function e(?string $v): string {
+        return htmlspecialchars((string)$v, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+    }
+}
+
+/* [LÓGICA DE SELEÇÃO] Garante que sempre haja um teste selecionado se existir catálogo */
+$codSel = $filtro['cod_teste'] ?? '';
+
+if ($teste_selecionado === null && !empty($testes)) {
+    // 1) tenta casar pelo cod_teste vindo do filtro
+    if ($codSel !== '') {
+        foreach ($testes as $t) {
+            if (isset($t['cod_teste']) && $t['cod_teste'] === $codSel) {
+                $teste_selecionado = $t;
+                break;
+            }
+        }
+    }
+
+    // 2) fallback: primeiro da lista
+    if ($teste_selecionado === null) {
+        $teste_selecionado = $testes[0];
     }
 }
 ?>
@@ -40,181 +68,96 @@ if (!function_exists('e')) {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <?php
-    // [AJUSTE] Monta caminho robusto para o CSS
-    // Preferência: $base_url vindo de paths.php
     if (isset($base_url) && $base_url !== '') {
         $cssHref = rtrim($base_url, '/') . '/css/style.css';
     } else {
-        // Fallback relativo a /public/index.php
         $cssHref = 'css/style.css';
     }
     $cssHref = htmlspecialchars($cssHref, ENT_QUOTES, 'UTF-8');
   ?>
 
-  <!-- [INCLUSÃO] CSS institucional unificado -->
   <link rel="stylesheet" href="<?= $cssHref ?>">
 </head>
+
 <body class="sistema-bg">
-  <div class="sistema-container app">
+<div class="sistema-container app">
 
-    <!-- Mensagens institucionais (erro/sucesso/alerta) -->
-    <?php include __DIR__ . '/componentes/mensagens.php'; ?>
+  <!-- Mensagens institucionais -->
+  <?php include __DIR__ . '/componentes/mensagens.php'; ?>
 
-    <!-- Cabeçalho padrão do módulo -->
-    <div class="app-logo">Slpires.COM</div>
-    <div class="app-title">Módulo de Testes – Catálogo</div>
-    <div class="app-desc">
-      Catálogo de casos de teste automatizados do sistema.<br>
-      Utilize os filtros abaixo para localizar e executar os testes desejados.
-    </div>
-
-    <?php if (!empty($mensagem_execucao)): ?>
-      <p class="app-info"><?= e($mensagem_execucao) ?></p>
-    <?php endif; ?>
-
-    <?php if (!empty($erro)): ?>
-      <div class="alert-erro" role="alert">
-        <?= e($erro) ?>
-      </div>
-    <?php endif; ?>
-
-    <!-- FORMULÁRIO DE FILTROS -->
-    <form method="get" action="<?= $action_base ?>" class="app-form" style="margin-top:1.5em; margin-bottom:1.5em;">
-      <!-- Rota fixa do módulo TESTES -->
-      <input type="hidden" name="r" value="testes">
-
-      <!-- MÓDULO (domínio fechado) -->
-      <div class="form-row">
-        <label for="modulo"><strong>Módulo</strong></label><br>
-        <?php $modSel = $filtro['modulo'] ?? ''; ?>
-        <select id="modulo" name="modulo">
-          <option value=""  <?= $modSel === ''  ? 'selected' : '' ?>>(Todos)</option>
-          <option value="FP" <?= $modSel === 'FP' ? 'selected' : '' ?>>FP – Simulação da Folha</option>
-          <option value="CC" <?= $modSel === 'CC' ? 'selected' : '' ?>>CC – Controle de Créditos</option>
-          <option value="RE" <?= $modSel === 'RE' ? 'selected' : '' ?>>RE – Relatórios</option>
-          <option value="TE" <?= $modSel === 'TE' ? 'selected' : '' ?>>TE – Testes (internos)</option>
-        </select>
-      </div>
-
-      <!-- TIPO DE TESTE (unitario / integrado / exibicao) -->
-      <div class="form-row">
-        <label for="tipo_teste"><strong>Tipo de teste</strong></label><br>
-        <?php $tipoSel = $filtro['tipo_teste'] ?? ''; ?>
-        <select id="tipo_teste" name="tipo_teste">
-          <option value=""           <?= $tipoSel === ''           ? 'selected' : '' ?>>(Todos)</option>
-          <option value="unitario"   <?= $tipoSel === 'unitario'   ? 'selected' : '' ?>>Unitário</option>
-          <option value="integrado"  <?= $tipoSel === 'integrado'  ? 'selected' : '' ?>>Integrado</option>
-          <option value="exibicao"   <?= $tipoSel === 'exibicao'   ? 'selected' : '' ?>>Exibição</option>
-        </select>
-      </div>
-
-      <div class="form-row">
-        <label for="prioridade"><strong>Prioridade</strong></label><br>
-        <select id="prioridade" name="prioridade">
-          <option value="">(Todas)</option>
-          <option value="alta"  <?= isset($filtro['prioridade']) && $filtro['prioridade'] === 'alta'  ? 'selected' : '' ?>>Alta</option>
-          <option value="media" <?= isset($filtro['prioridade']) && $filtro['prioridade'] === 'media' ? 'selected' : '' ?>>Média</option>
-          <option value="baixa" <?= isset($filtro['prioridade']) && $filtro['prioridade'] === 'baixa' ? 'selected' : '' ?>>Baixa</option>
-        </select>
-      </div>
-
-      <div class="form-row">
-        <label for="status_teste"><strong>Status catálogo</strong></label><br>
-        <select id="status_teste" name="status_teste">
-          <option value="">(Todos)</option>
-          <option value="nao_exec"   <?= isset($filtro['status_teste']) && $filtro['status_teste'] === 'nao_exec'   ? 'selected' : '' ?>>Não executado</option>
-          <option value="aprovado"   <?= isset($filtro['status_teste']) && $filtro['status_teste'] === 'aprovado'   ? 'selected' : '' ?>>Aprovado</option>
-          <option value="reprovado"  <?= isset($filtro['status_teste']) && $filtro['status_teste'] === 'reprovado'  ? 'selected' : '' ?>>Reprovado</option>
-          <option value="indefinido" <?= isset($filtro['status_teste']) && $filtro['status_teste'] === 'indefinido' ? 'selected' : '' ?>>Indefinido</option>
-        </select>
-      </div>
-
-      <div class="form-row">
-        <label for="ativo"><strong>Ativo</strong></label><br>
-        <select id="ativo" name="ativo">
-          <?php $ativo = $filtro['ativo'] ?? ''; ?>
-          <option value=""  <?= $ativo === ''  ? 'selected' : '' ?>>(Todos)</option>
-          <option value="1" <?= $ativo === '1' ? 'selected' : '' ?>>Somente ativos</option>
-          <option value="0" <?= $ativo === '0' ? 'selected' : '' ?>>Somente inativos</option>
-        </select>
-      </div>
-
-      <div class="form-row" style="margin-top:1.1em;">
-        <button type="submit" class="btn">Aplicar filtros</button>
-        <a class="btn" href="<?= $action_base ?>?r=testes">Limpar</a>
-      </div>
-    </form>
-
-    <!-- AÇÕES EM LOTE (runAll / replay) -->
-    <div class="app-btn-group" style="margin-bottom:1.5em;">
-      <?php
-        $modulo     = trim($filtro['modulo']     ?? '');
-        $tipo_teste = trim($filtro['tipo_teste'] ?? '');
-        $disabled   = ($modulo === '' || $tipo_teste === '');
-      ?>
-      <a
-        class="btn<?= $disabled ? ' btn-disabled' : '' ?>"
-        href="<?= $disabled ? '#' : $action_base . '?r=testes&acao=runAll&modulo=' . urlencode($modulo) . '&tipo_teste=' . urlencode($tipo_teste) ?>"
-        <?= $disabled ? 'aria-disabled="true"' : '' ?>
-      >
-        Executar lote (máx. 50)
-      </a>
-
-      <a
-        class="btn<?= $disabled ? ' btn-disabled' : '' ?>"
-        href="<?= $disabled ? '#' : $action_base . '?r=testes&acao=replay&modulo=' . urlencode($modulo) . '&tipo_teste=' . urlencode($tipo_teste) ?>"
-        <?= $disabled ? 'aria-disabled="true"' : '' ?>
-      >
-        Replay de reprovados
-      </a>
-    </div>
-
-    <?php if (!empty($testes)): ?>
-      <!-- TABELA DE RESULTADOS -->
-      <table class="app-table" style="margin-top:1em;">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Módulo</th>
-            <th>Cenário</th>
-            <th>Tipo</th>
-            <th>Prioridade</th>
-            <th>Status</th>
-            <th>Ativo</th>
-            <th>Ações</th>
-          </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($testes as $t): ?>
-          <tr>
-            <td><?= e((string)($t['id_teste'] ?? '')) ?></td>
-            <td><?= e($t['modulo']       ?? '') ?></td>
-            <td><?= e($t['cenario']      ?? '') ?></td>
-            <td><?= e($t['tipo_teste']   ?? '') ?></td>
-            <td><?= e($t['prioridade']   ?? '') ?></td>
-            <td><?= e($t['status_teste'] ?? '') ?></td>
-            <td><?= isset($t['ativo']) && (int)$t['ativo'] === 1 ? 'Sim' : 'Não' ?></td>
-            <td>
-              <a
-                class="btn"
-                href="<?= $action_base ?>?r=testes&acao=run&id_teste=<?= urlencode((string)($t['id_teste'] ?? '')) ?>"
-              >
-                Executar
-              </a>
-            </td>
-          </tr>
-        <?php endforeach; ?>
-        </tbody>
-      </table>
-    <?php else: ?>
-      <p style="margin-top:1.5em;">
-        Nenhum caso de teste encontrado para os critérios informados.
-      </p>
-    <?php endif; ?>
-
-    <!-- Rodapé institucional do usuário logado (inclui botão Sair do Sistema) -->
-    <?php require_once __DIR__ . '/rodape_usuario.php'; ?>
-
+  <!-- Cabeçalho padrão -->
+  <div class="app-logo">Slpires.COM</div>
+  <div class="app-title">Módulo de Testes – Catálogo</div>
+  <div class="app-desc">
+    Escolha um dos testes listados abaixo.
   </div>
+
+  <!-- Mensagens pós-execução -->
+  <?php if (!empty($mensagem_execucao)): ?>
+    <p class="app-info"><?= e($mensagem_execucao) ?></p>
+  <?php endif; ?>
+
+  <!-- Erros -->
+  <?php if (!empty($erro)): ?>
+    <div class="alert-erro" role="alert"><?= e($erro) ?></div>
+  <?php endif; ?>
+
+  <!-- FORMULÁRIO PRINCIPAL -->
+  <form method="get" action="<?= e($action_base) ?>" class="app-form" style="margin-top:1.5em;">
+
+    <input type="hidden" name="r" value="testes">
+
+    <!-- ÚNICO FILTRO: CÓDIGO DO TESTE -->
+    <div class="form-row">
+      <label for="cod_teste"><strong>Código do teste</strong></label><br>
+      <select id="cod_teste" name="cod_teste">
+        <?php foreach ($codigos_teste as $codigo): ?>
+          <option value="<?= e($codigo) ?>" <?= $codSel === $codigo ? 'selected' : '' ?>>
+            <?= e($codigo) ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+
+    <?php if (!empty($teste_selecionado) && !empty($teste_selecionado['id_teste'])): ?>
+
+      <!-- LISTA AMIGÁVEL DE DETALHES DO TESTE -->
+      <ul class="teste-detalhes" style="margin-top:1em; padding-left:1.2em; line-height:1.5; text-align:left;">
+        <li><strong>Código do teste:</strong> <em><?= e($teste_selecionado['cod_teste'] ?? '') ?></em></li>
+        <li><strong>Módulo:</strong> <em><?= e($teste_selecionado['modulo'] ?? '') ?></em></li>
+        <li><strong>Cenário:</strong> <em><?= e($teste_selecionado['cenario'] ?? '') ?></em></li>
+        <li><strong>Prioridade:</strong> <em><?= e($teste_selecionado['prioridade'] ?? '') ?></em></li>
+        <li><strong>Descrição do teste:</strong> <em><?= e($teste_selecionado['descricao_teste'] ?? '') ?></em></li>
+        <li><strong>Tipo do teste:</strong> <em><?= e($teste_selecionado['tipo_teste'] ?? '') ?></em></li>
+        <li><strong>Status no catálogo:</strong> <em><?= e($teste_selecionado['status_teste'] ?? '') ?></em></li>
+        <li><strong>Executado em:</strong> <em><?= e($teste_selecionado['executado_em'] ?? '') ?></em></li>
+        <li><strong>Mensagem da última execução:</strong> <em><?= e($teste_selecionado['mensagem'] ?? '') ?></em></li>
+      </ul>
+
+      <!-- BOTÃO: EXECUTAR TESTE -->
+      <div style="margin-top:1.5em; text-align:center;">
+        <a
+          class="btn"
+          style="display:inline-block; width:100%;"
+          href="<?= e($action_base) ?>?r=testes&amp;acao=run&amp;id_teste=<?= urlencode((string)$teste_selecionado['id_teste']) ?>"
+        >
+          Executar teste
+        </a>
+      </div>
+
+    <?php else: ?>
+
+      <p class="app-info" style="margin-top:1em; text-align:center;">
+        Nenhum teste encontrado no catálogo.
+      </p>
+
+    <?php endif; ?>
+
+  </form>
+
+  <!-- Rodapé institucional -->
+  <?php require_once __DIR__ . '/rodape_usuario.php'; ?>
+
+</div>
 </body>
 </html>
