@@ -235,6 +235,8 @@ function carregarTeste(int $id_teste): array
             prioridade,
             descricao_teste,
             status_teste,
+            data_execucao,
+            observacoes,
             ativo,
             criado_em,
             atualizado_em
@@ -481,7 +483,19 @@ function registrarResultado(int $id_teste, array $resultado): int
     $entradaJson  = json_encode($resultado['entrada']  ?? null, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
     $esperadoJson = json_encode($resultado['esperado'] ?? null, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
 
-    $saidaJson      = (string) ($resultado['saida_json']      ?? '');
+    // [AJUSTE SAIDA_JSON] Garante JSON não vazio mesmo em cenários de erro
+    $saidaJsonRaw = $resultado['saida_json'] ?? '{}';
+
+    if (is_array($saidaJsonRaw) || is_object($saidaJsonRaw)) {
+        $saidaJson = json_encode($saidaJsonRaw, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+    } else {
+        $saidaJson = (string) $saidaJsonRaw;
+    }
+
+    if (trim($saidaJson) === '') {
+        $saidaJson = '{}';
+    }
+
     $statusExecucao = (string) ($resultado['status_execucao'] ?? TEST_STATUS_ERROR);
     $duracaoMs      = (int)    ($resultado['duracao_ms']      ?? 0);
     $mensagem       = (string) ($resultado['mensagem']        ?? '');

@@ -94,7 +94,7 @@ function testes_run(int $id_teste): void
         }
 
         $resultado = executarTeste($caso, [
-            'dry_run'   => true,
+            'dry_run'   => false,   // <<< agora grava em banco
             'registrar' => true,
             'log'       => true,
         ]);

@@ -110,7 +110,11 @@ if ($teste_selecionado === null && !empty($testes)) {
     <!-- ÚNICO FILTRO: CÓDIGO DO TESTE -->
     <div class="form-row">
       <label for="cod_teste"><strong>Código do teste</strong></label><br>
-      <select id="cod_teste" name="cod_teste">
+      <select
+        id="cod_teste"
+        name="cod_teste"
+        onchange="this.form.submit()"  <!-- <<< AJUSTE CRÍTICO -->
+      >
         <?php foreach ($codigos_teste as $codigo): ?>
           <option value="<?= e($codigo) ?>" <?= $codSel === $codigo ? 'selected' : '' ?>>
             <?= e($codigo) ?>
@@ -118,6 +122,7 @@ if ($teste_selecionado === null && !empty($testes)) {
         <?php endforeach; ?>
       </select>
     </div>
+
 
     <?php if (!empty($teste_selecionado) && !empty($teste_selecionado['id_teste'])): ?>
 

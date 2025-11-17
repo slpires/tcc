@@ -34,10 +34,12 @@
  *                  carregarTeste() em testes_service.php.
  *                  Utiliza, principalmente:
  *                    - id_teste
+ *                    - cod_teste
  *                    - modulo
  *                    - cenario
  *                    - prioridade
  *                    - descricao_teste
+ *                    - observacoes
  *
  *   $opcoes (array opcional):
  *     - 'dry_run' => bool (indica se a execução é apenas de simulação)
@@ -47,13 +49,61 @@
  */
 function te_run_test_case(array $caso, array $opcoes = []): array
 {
-    $idTeste    = $caso['id_teste']        ?? null;
-    $modulo     = $caso['modulo']          ?? '';
-    $cenario    = $caso['cenario']         ?? '';
-    $prioridade = $caso['prioridade']      ?? '';
-    $descricao  = $caso['descricao_teste'] ?? '';
+    $idTeste     = $caso['id_teste']        ?? null;
+    $codTeste    = $caso['cod_teste']       ?? '';
+    $modulo      = $caso['modulo']          ?? '';
+    $cenario     = $caso['cenario']         ?? '';
+    $prioridade  = $caso['prioridade']      ?? '';
+    $descricao   = $caso['descricao_teste'] ?? '';
+    $observacoes = $caso['observacoes']     ?? '';
 
     $dryRun = !empty($opcoes['dry_run']);
+
+    // Normaliza observações para busca de marcadores de simulação
+    $obsStr = is_string($observacoes) ? $observacoes : '';
+    $flagSimFail  = (strpos($obsStr, '[SIM_FAIL]')  !== false);
+    $flagSimError = (strpos($obsStr, '[SIM_ERROR]') !== false);
+
+    // =====================================================================
+    // SIMULAÇÕES GENÉRICAS CONTROLADAS PELO CATÁLOGO (SEM HARDCODE DE CÓDIGO)
+    // =====================================================================
+
+    // Simulação de erro técnico (ERROR) via marcador [SIM_ERROR]
+    if ($flagSimError) {
+        throw new Exception(
+            'Exceção forçada pelo Módulo TESTES conforme configuração de simulação [SIM_ERROR] no catálogo.'
+        );
+    }
+
+    // Simulação de falha funcional (FAIL) via marcador [SIM_FAIL]
+    if ($flagSimFail) {
+        return [
+            'status_execucao' => TEST_STATUS_FAIL,
+            'saida'           => [
+                'id_teste'     => $idTeste,
+                'cod_teste'    => $codTeste,
+                'modulo'       => $modulo,
+                'cenario'      => $cenario,
+                'prioridade'   => $prioridade,
+                'descricao'    => $descricao,
+                'observacoes'  => $observacoes,
+                'dry_run'      => $dryRun,
+            ],
+            'mensagem'        => 'Falha forçada pelo Módulo TESTES conforme configuração de simulação [SIM_FAIL] no catálogo.',
+            'items'           => [
+                [
+                    'descricao' => 'Simulação controlada de falha funcional configurada no catálogo (marcador [SIM_FAIL]).',
+                    'ok'        => false,
+                    'mensagem'  => 'Falha proposital do teste para inspeção de interface, logs e fluxo de erro.',
+                ],
+            ],
+            'summary'         => 'Execução simulada com resultado FAIL conforme configuração de simulação no catálogo de testes.',
+        ];
+    }
+
+    // =====================================================================
+    // A partir daqui, comportamento padrão de sanidade do Módulo TESTES
+    // =====================================================================
 
     $items   = [];
     $okGeral = true;
@@ -96,12 +146,14 @@ function te_run_test_case(array $caso, array $opcoes = []): array
 
     // Payload de saída (para eventual inspeção na view de resultados)
     $saida = [
-        'id_teste'   => $idTeste,
-        'modulo'     => $modulo,
-        'cenario'    => $cenario,
-        'prioridade' => $prioridade,
-        'descricao'  => $descricao,
-        'dry_run'    => $dryRun,
+        'id_teste'     => $idTeste,
+        'cod_teste'    => $codTeste,
+        'modulo'       => $modulo,
+        'cenario'      => $cenario,
+        'prioridade'   => $prioridade,
+        'descricao'    => $descricao,
+        'observacoes'  => $observacoes,
+        'dry_run'      => $dryRun,
     ];
 
     $statusExecucao = $okGeral ? TEST_STATUS_PASS : TEST_STATUS_FAIL;
