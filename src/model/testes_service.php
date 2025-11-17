@@ -421,7 +421,8 @@ function executarTeste(array $caso, array $opcoes = []): array
     ];
 
     // Persistência em teste_execucao
-    if ($registrar) {
+    // [AJUSTE DRY-RUN] Execuções em modo dry-run não devem persistir no banco.
+    if ($registrar && !$dryRun) {
         registrarResultado(
             (int) $caso['id_teste'],
             $resultado
@@ -537,7 +538,8 @@ function registrarResultado(int $id_teste, array $resultado): int
     // Atualização do status consolidado no catálogo
     $sqlUpdate = "
         UPDATE teste_automatizado
-           SET status_teste = ?,
+           SET status_teste  = ?,
+               data_execucao = NOW(), -- [AJUSTE DATA_EXECUCAO] Registro da última execução real
                atualizado_em = NOW()
          WHERE id_teste = ?
          LIMIT 1
