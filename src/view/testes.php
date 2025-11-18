@@ -18,7 +18,7 @@ require_once __DIR__ . '/../controller/verificar_permissao.php';
 require_once __DIR__ . '/../../config/paths.php';
 
 /* [NORMALIZAÇÃO] Variáveis esperadas do controller */
-$titulo_pagina     = isset($titulo_pagina)     ? (string) $titulo_pagina     : 'Módulo de Testes – Catálogo';
+$titulo_pagina     = isset($titulo_pagina)     ? (string) $titulo_pagina     : 'Catálogo de Casos de Testes';
 $mensagem_execucao = isset($mensagem_execucao) ? (string) $mensagem_execucao : '';
 $erro              = isset($erro)              ? $erro                       : '';
 $filtro            = isset($filtro) && is_array($filtro) ? $filtro           : [];
@@ -110,7 +110,7 @@ if ($teste_selecionado === null && !empty($testes)) {
 
   <!-- Cabeçalho padrão -->
   <div class="app-logo">Slpires.COM</div>
-  <div class="app-title">Módulo de Testes – Catálogo</div>
+  <div class="app-title">Catálogo de Casos de Testes</div>
   <div class="app-desc">
     Escolha um dos casos de teste listados abaixo:
   </div>

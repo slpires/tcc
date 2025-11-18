@@ -1,15 +1,52 @@
 <?php
 /*
     /src/view/relatorios.php
-    [INCLUSÃO]
-    View do módulo de Relatórios.
-    Realiza verificação de permissão e inclui paths dinâmicos para assets institucionais.
+    [VIEW]
+    Módulo de Relatórios.
+    - Verifica permissão de acesso ao módulo;
+    - Carrega paths institucionais;
+    - Exibe, em formato de botões (responsivo), apenas os relatórios
+      permitidos para o perfil da sessão, conforme matriz JSON.
 */
 
 /* [INCLUSÃO] Verifica permissão de acesso ao módulo */
 require_once __DIR__ . '/../controller/verificar_permissao.php';
-/* [INCLUSÃO] Caminho base dinâmico para assets e controllers */
+
+/* [INCLUSÃO] Caminhos institucionais ($base_url, $action_base) */
 require_once __DIR__ . '/../../config/paths.php';
+
+/* [NORMALIZAÇÃO] Estruturas esperadas vindas do controller */
+if (!isset($relatorios_permitidos) || !is_array($relatorios_permitidos)) {
+    $relatorios_permitidos = [];
+}
+if (!isset($relatorios_config) || !is_array($relatorios_config)) {
+    $relatorios_config = [];
+}
+
+/*
+    Espera-se que o controller já tenha aplicado a filtragem por:
+    - perfil da sessão; e
+    - relatórios efetivamente implementados nesta release do MVP.
+
+    Ainda assim, esta view só considera chaves que existam na configuração.
+*/
+$relatorios_disponiveis = [];
+
+if (isset($relatorios_config['relatorios']) && is_array($relatorios_config['relatorios'])) {
+    foreach ($relatorios_permitidos as $chave) {
+        if (isset($relatorios_config['relatorios'][$chave]) && is_array($relatorios_config['relatorios'][$chave])) {
+            $relatorios_disponiveis[$chave] = $relatorios_config['relatorios'][$chave];
+        }
+    }
+}
+
+/* [HELPER] Escape HTML simples (fallback local) */
+if (!function_exists('view_escape')) {
+    function view_escape(string $valor): string
+    {
+        return htmlspecialchars($valor, ENT_QUOTES, 'UTF-8');
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -37,10 +74,41 @@ require_once __DIR__ . '/../../config/paths.php';
 
     <div class="app-logo">Slpires.COM</div>
     <div class="app-title">Relatórios</div>
-    <div class="app-desc" style="margin-bottom: 2.5em;">
-      Você está na página do módulo <strong>Relatórios</strong>.<br>
-      Esta versão do sistema apresenta apenas funcionalidades essenciais do MVP; os relatórios gerenciais completos serão tratados como evolução futura.
+
+    <div class="app-desc">
+      Selecione um dos relatórios abaixo:
     </div>
+
+    <?php if (!empty($relatorios_disponiveis)): ?>
+      <div class="app-desc" style="margin-top: 1.2em;">
+        Selecione abaixo o tipo de relatório disponível para o seu perfil:
+      </div>
+
+      <!-- [LISTA] Botões de relatórios permitidos (responsivo / mobile first) -->
+      <div class="app-btn-group" role="group" aria-label="Relatórios disponíveis para o seu perfil">
+        <?php foreach ($relatorios_disponiveis as $chave => $dados): ?>
+          <?php
+            $nomeRelatorio = isset($dados['nome']) && $dados['nome'] !== ''
+                ? (string) $dados['nome']
+                : (string) $chave;
+
+            // PADRÃO DO SISTEMA:
+            // - usar $action_base como endpoint do front controller;
+            // - montar query string com & (não &amp;);
+            // - o browser se encarrega de enviar ?r=relatorios&tipo=logs.
+            $href = $action_base . '?r=relatorios&tipo=' . urlencode($chave);
+          ?>
+          <a class="app-btn" href="<?= $href ?>">
+            <?= view_escape($nomeRelatorio) ?>
+          </a>
+        <?php endforeach; ?>
+      </div>
+    <?php else: ?>
+      <div class="app-info" style="margin-top: 1.5em; margin-bottom: 1.5em;">
+        Nenhum relatório está disponível para o seu perfil no momento.
+      </div>
+    <?php endif; ?>
+
     <!-- [INCLUSÃO] Rodapé institucional do usuário logado -->
     <?php require_once __DIR__ . '/rodape_usuario.php'; ?>
   </div>
