@@ -7,15 +7,15 @@
     Mostra identificação, perfil, setor e horário atualizado automaticamente.
 */
 
-/* Sessão idempotente */
+/* [SESSÃO] Idempotente */
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-/* Caminhos institucionais (expõe $action_base e $base_url) */
+/* [INCLUSÃO] Caminhos institucionais ($base_url, $action_base, $url_base) */
 require_once __DIR__ . '/../../config/paths.php';
 
-/* Exibe o rodapé apenas se o usuário estiver autenticado */
+/* [VALIDAÇÃO] Exibe o rodapé apenas se o usuário estiver autenticado */
 $autenticado = isset(
     $_SESSION['nome'],
     $_SESSION['matricula'],
@@ -25,20 +25,34 @@ $autenticado = isset(
 );
 
 if (!$autenticado) {
-    // Nada a renderizar para visitantes
+    // Visitante ou sessão inconsistente → não renderiza rodapé
     return;
 }
 
-/* Normalização/escape dos rótulos */
-$nome      = htmlspecialchars((string)($_SESSION['nome'] ?? ''),      ENT_QUOTES, 'UTF-8');
-$matricula = htmlspecialchars((string)($_SESSION['matricula'] ?? ''), ENT_QUOTES, 'UTF-8');
-$cargo     = htmlspecialchars((string)($_SESSION['cargo'] ?? ''),     ENT_QUOTES, 'UTF-8');
-$perfil    = htmlspecialchars((string)($_SESSION['perfil'] ?? ''),    ENT_QUOTES, 'UTF-8');
-$setor     = htmlspecialchars((string)($_SESSION['setor'] ?? ''),     ENT_QUOTES, 'UTF-8');
+/* [NORMALIZAÇÃO] Dados do usuário com escape */
+$nome      = htmlspecialchars((string) ($_SESSION['nome'] ?? ''),      ENT_QUOTES, 'UTF-8');
+$matricula = htmlspecialchars((string) ($_SESSION['matricula'] ?? ''), ENT_QUOTES, 'UTF-8');
+$cargo     = htmlspecialchars((string) ($_SESSION['cargo'] ?? ''),     ENT_QUOTES, 'UTF-8');
+$perfil    = htmlspecialchars((string) ($_SESSION['perfil'] ?? ''),    ENT_QUOTES, 'UTF-8');
+$setor     = htmlspecialchars((string) ($_SESSION['setor'] ?? ''),     ENT_QUOTES, 'UTF-8');
 
-/* Data/hora inicial (São Paulo) */
+/* [DATA/HORA] Inicial (fuso de São Paulo) */
 date_default_timezone_set('America/Sao_Paulo');
 $agora_inicial = date('d/m/Y - H:i:s');
+
+/* [AJUSTE] Montagem segura da URL de logout
+   - Preferência: $action_base (quando definido em paths.php)
+   - Fallback: $base_url/index.php?r=logout
+   - Fallback mínimo: ./index.php?r=logout
+*/
+if (isset($action_base) && $action_base !== '') {
+    $logout_href = $action_base . '?r=logout';
+} elseif (isset($base_url) && $base_url !== '') {
+    $logout_href = rtrim($base_url, '/') . '/index.php?r=logout';
+} else {
+    $logout_href = './index.php?r=logout';
+}
+$logout_href = htmlspecialchars($logout_href, ENT_QUOTES, 'UTF-8');
 ?>
 <footer class="footer-version app-footer">
   <small>
@@ -53,9 +67,9 @@ $agora_inicial = date('d/m/Y - H:i:s');
     <!-- Linha 3: Data e hora com atualização automática -->
     <span id="data-hora-usuario"><?= $agora_inicial ?></span><br><br>
 
-    <!-- Único botão centralizado: Sair do Sistema -->
+    <!-- Botão centralizado: Sair do Sistema -->
     <div style="text-align:center; margin-top:0.8rem;">
-      <a href="<?= $action_base ?>?r=logout"
+      <a href="<?= $logout_href ?>"
          class="btn-logout"
          aria-label="Encerrar sessão e retornar à página inicial"
          style="display:inline-block; padding:0.5em 1.2em; border-radius:6px;
@@ -85,7 +99,7 @@ $agora_inicial = date('d/m/Y - H:i:s');
       alvo.textContent = `${dd}/${mm}/${yyyy} - ${hh}:${mi}:${ss}`;
     }
 
-    atualizar();                // inicial
-    setInterval(atualizar, 1000); // a cada 1s
+    atualizar();
+    setInterval(atualizar, 1000);
   })();
 </script>
