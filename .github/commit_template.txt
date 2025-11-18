@@ -1,0 +1,33 @@
+# ============================================================
+# TEMPLATE INSTITUCIONAL DE COMMITS — SLPIRES.COM
+# ============================================================
+# Universidade Federal Fluminense — Instituto de Computação
+# Autor: Sérgio Luís de Oliveira Pires
+# Orientador: Prof. Leandro Soares de Sousa
+# Projeto: Trabalho de Conclusão de Curso — MVP SLPIRES.COM
+# ============================================================
+# Instruções:
+# 1. Utilize o formato padrão abaixo para todos os commits.
+# 2. Preencha os campos com objetividade e coerência.
+# 3. Mantenha a linguagem formal e padronizada.
+# ============================================================
+
+<tipo>: <descrição breve e direta>  
+
+[Fase] <nome ou número da fase> — [Módulo] <nome_do_módulo>  
+Autor: Sérgio Luís de Oliveira Pires  
+Data: <AAAA-MM-DD HH:MM>  
+
+[OBJETIVO]
+<Explique o propósito principal deste commit, de forma sucinta e técnica.>
+
+[ALTERAÇÕES REALIZADAS]
+1. <Descreva a primeira alteração relevante.>
+2. <Descreva a segunda alteração relevante.>
+3. <Continue listando, se necessário.>
+
+[RESULTADO]
+<Explique o efeito final esperado no sistema ou documento.>
+
+[STATUS]
+✅ Concluído | ⚠️ Parcial | ❌ Em revisão
