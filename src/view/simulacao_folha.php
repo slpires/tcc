@@ -110,8 +110,8 @@ if ($resultado) {
     <div class="card">
       <div class="card-body">
         <div class="app-desc">
-          Integração <strong>DRY-RUN</strong> com o módulo <strong>CONTROLE_CREDITO</strong>.<br>
-          Processa competências de forma <em>sequencial</em> e com <em>fechamento</em> (sem reprocessar).
+          Realiza a simulação, com abatimento automático de créditos a recuperar registrados para os empregados.<br>
+          A execução não grava dados definitivos no banco de dados.
         </div>
 
         <div class="competencia-info">

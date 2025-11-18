@@ -112,7 +112,7 @@ if ($teste_selecionado === null && !empty($testes)) {
   <div class="app-logo">Slpires.COM</div>
   <div class="app-title">Módulo de Testes – Catálogo</div>
   <div class="app-desc">
-    Escolha um dos testes listados abaixo.
+    Escolha um dos casos de teste listados abaixo:
   </div>
 
   <!-- Mensagens pós-execução -->

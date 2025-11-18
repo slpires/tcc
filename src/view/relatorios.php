@@ -39,7 +39,7 @@ require_once __DIR__ . '/../../config/paths.php';
     <div class="app-title">Relatórios</div>
     <div class="app-desc" style="margin-bottom: 2.5em;">
       Você está na página do módulo <strong>Relatórios</strong>.<br>
-      (Conteúdo do módulo será implementado aqui)
+      Esta versão do sistema apresenta apenas funcionalidades essenciais do MVP; os relatórios gerenciais completos serão tratados como evolução futura.
     </div>
     <!-- [INCLUSÃO] Rodapé institucional do usuário logado -->
     <?php require_once __DIR__ . '/rodape_usuario.php'; ?>
