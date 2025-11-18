@@ -172,8 +172,8 @@ if ($data_selecionada !== '') {
                               $tamanho = isset($log['tamanho']) ? (int) $log['tamanho'] : 0;
                               $hrefDownload = $action_base
                                   . '?r=relatorios'
-                                  . '&amp;acao=download'
-                                  . '&amp;arquivo=' . rawurlencode($nome);
+                                  . '&acao=download'
+                                  . '&arquivo=' . rawurlencode($nome);
                           ?>
                           <tr>
                               <td>
