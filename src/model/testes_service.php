@@ -619,25 +619,51 @@ function testes_resolver_adapter(string $modulo): array
  *
  * Arquivo de log:
  *   /logs/testes_YYYYMMDD.txt
+ *
+ * [AJUSTE 20251118]
+ * - Timestamp padronizado no início de cada linha: [AAAAMMDD_hhmmss]:
+ * - Corpo da mensagem em formato campo=valor;campo=valor; ...
+ * - Uso explícito do fuso horário America/Sao_Paulo.
  */
 function testes_registrar_log(array $caso, array $resumo, $entrada = null, $esperado = null): void
 {
-    $dataHoje  = date('Ymd');
-    $horaAgora = date('H:i:s');
+    // [AJUSTE 20251118] Timestamp local no padrão [AAAAMMDD_hhmmss]:
+    $agora     = new DateTime('now', new DateTimeZone('America/Sao_Paulo'));
+    $dataHoje  = $agora->format('Ymd');
+    $timestamp = $agora->format('Ymd_His');
+    $prefixo   = sprintf('[%s]: ', $timestamp);
 
-    $linha = sprintf(
-        "[%s] id_teste=%s modulo=%s cenario=%s tipo=%s prioridade=%s status=%s dry_run=%s duracao_ms=%s msg=%s\n",
-        $horaAgora,
-        $caso['id_teste']           ?? '?',
-        $caso['modulo']             ?? '?',
-        $caso['cenario']            ?? '?',
-        $caso['tipo_teste']         ?? '?',
-        $caso['prioridade']         ?? '?',
-        $resumo['status_execucao']  ?? '?',
-        $resumo['dry_run']          ?? '?',
-        $resumo['duracao_ms']       ?? '?',
-        substr((string) ($resumo['mensagem'] ?? ''), 0, 200)
-    );
+    // [AJUSTE 20251118] Corpo do log no padrão campo=valor;campo=valor;...
+    $campos = [
+        'id_teste'   => $caso['id_teste']          ?? '?',
+        'modulo'     => $caso['modulo']            ?? '?',
+        'cenario'     => $caso['cenario']          ?? '?',
+        'tipo'       => $caso['tipo_teste']        ?? '?',
+        'prioridade' => $caso['prioridade']        ?? '?',
+        'status'     => $resumo['status_execucao'] ?? '?',
+        'dry_run'    => $resumo['dry_run']         ?? '?',
+        'duracao_ms' => $resumo['duracao_ms']      ?? '?',
+        'msg'        => substr((string) ($resumo['mensagem'] ?? ''), 0, 200),
+    ];
+
+    $partes = [];
+
+    foreach ($campos as $chave => $valor) {
+        // Normalização de tipos para string
+        if (is_bool($valor)) {
+            $valor = $valor ? '1' : '0';
+        } elseif (!is_scalar($valor)) {
+            $valor = json_encode($valor, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+        }
+
+        // [AJUSTE 20251118] Garantir linha única e não quebrar separador ';'
+        $valor = str_replace(["\r", "\n", ";"], [' ', ' ', ' '], (string) $valor);
+
+        $partes[] = $chave . '=' . $valor;
+    }
+
+    // Linha final no padrão definido
+    $linha = $prefixo . implode(';', $partes) . "\n";
 
     $caminhoLog = __DIR__ . '/../../logs/testes_' . $dataHoje . '.txt';
 
@@ -648,3 +674,4 @@ function testes_registrar_log(array $caso, array $resumo, $entrada = null, $espe
         // Silencioso por segurança.
     }
 }
+

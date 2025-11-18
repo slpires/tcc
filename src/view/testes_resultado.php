@@ -65,7 +65,7 @@ $modulo     = $caso['modulo']          ?? '';
 $cenario    = $caso['cenario']         ?? '';
 $prioridade = $caso['prioridade']      ?? '';
 $tipo_teste = $caso['tipo_teste']      ?? '';
-$descricao  = $caso['descricao_teste'] ?? '';
+$descricao  = $caso['descricao_teste'] ?? '' ;
 
 /* Caminho base para ações (fallback simples) */
 $action_base = isset($action_base) ? (string) $action_base : 'index.php';
@@ -78,15 +78,37 @@ $action_base = isset($action_base) ? (string) $action_base : 'index.php';
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <?php
-    // Monta caminho robusto para o CSS (mesma lógica da view principal)
-    if (isset($base_url) && $base_url !== '') {
-        $cssHref = rtrim($base_url, '/') . '/css/style.css';
-    } else {
-        $cssHref = 'css/style.css';
-    }
-    $cssHref = htmlspecialchars($cssHref, ENT_QUOTES, 'UTF-8');
+  /* [AJUSTE-FAVICON]
+     Padronização da resolução de caminhos de assets (CSS/IMG) para compatibilidade
+     entre DEV (XAMPP) e PRD (HostGator), mesmo se $base_url vier vazio. */
+  if (isset($base_url) && $base_url !== '') {
+      $assetBaseCss = rtrim($base_url, '/') . '/css';
+      $assetBaseImg = rtrim($base_url, '/') . '/img';
+  } else {
+      $assetBaseCss = 'css';
+      $assetBaseImg = 'img';
+  }
+
+  $cssHref       = htmlspecialchars($assetBaseCss . '/style.css', ENT_QUOTES, 'UTF-8');
+  $favicon16Href = htmlspecialchars($assetBaseImg . '/favicon-16x16.png', ENT_QUOTES, 'UTF-8');
+  $favicon32Href = htmlspecialchars($assetBaseImg . '/favicon-32x32.png', ENT_QUOTES, 'UTF-8');
+  $faviconIco    = htmlspecialchars($assetBaseImg . '/favicon.ico', ENT_QUOTES, 'UTF-8');
+  $appleTouch    = htmlspecialchars($assetBaseImg . '/apple-touch-icon.png', ENT_QUOTES, 'UTF-8');
+  $android192    = htmlspecialchars($assetBaseImg . '/android-chrome-192x192.png', ENT_QUOTES, 'UTF-8');
+  $android512    = htmlspecialchars($assetBaseImg . '/android-chrome-512x512.png', ENT_QUOTES, 'UTF-8');
+  $manifestHref  = htmlspecialchars($assetBaseImg . '/site.webmanifest', ENT_QUOTES, 'UTF-8');
   ?>
 
+  <!-- [INCLUSÃO] Favicon e Favibar padronizados -->
+  <link rel="icon" type="image/png" sizes="32x32" href="<?= $favicon32Href ?>">
+  <link rel="icon" type="image/png" sizes="16x16" href="<?= $favicon16Href ?>">
+  <link rel="shortcut icon" href="<?= $faviconIco ?>" type="image/x-icon">
+  <link rel="apple-touch-icon" sizes="180x180" href="<?= $appleTouch ?>">
+  <link rel="icon" type="image/png" sizes="192x192" href="<?= $android192 ?>">
+  <link rel="icon" type="image/png" sizes="512x512" href="<?= $android512 ?>">
+  <link rel="manifest" href="<?= $manifestHref ?>">
+
+  <!-- [INCLUSÃO] CSS institucional -->
   <link rel="stylesheet" href="<?= $cssHref ?>">
 </head>
 <body class="sistema-bg">

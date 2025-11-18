@@ -63,20 +63,43 @@ if ($teste_selecionado === null && !empty($testes)) {
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title><?= e($titulo_pagina) ?> | SLPIRES.COM</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <title><?= e($titulo_pagina) ?> | SLPIRES.COM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <?php
+    <?php
+    /* [AJUSTE-FAVICON]
+       Padronização da resolução de caminhos de assets (CSS/IMG) para compatibilidade
+       entre DEV (XAMPP) e PRD (HostGator), mesmo se $base_url vier vazio. */
     if (isset($base_url) && $base_url !== '') {
-        $cssHref = rtrim($base_url, '/') . '/css/style.css';
+        $assetBaseCss = rtrim($base_url, '/') . '/css';
+        $assetBaseImg = rtrim($base_url, '/') . '/img';
     } else {
-        $cssHref = 'css/style.css';
+        $assetBaseCss = 'css';
+        $assetBaseImg = 'img';
     }
-    $cssHref = htmlspecialchars($cssHref, ENT_QUOTES, 'UTF-8');
-  ?>
 
-  <link rel="stylesheet" href="<?= $cssHref ?>">
+    $cssHref       = htmlspecialchars($assetBaseCss . '/style.css', ENT_QUOTES, 'UTF-8');
+    $favicon16Href = htmlspecialchars($assetBaseImg . '/favicon-16x16.png', ENT_QUOTES, 'UTF-8');
+    $favicon32Href = htmlspecialchars($assetBaseImg . '/favicon-32x32.png', ENT_QUOTES, 'UTF-8');
+    $faviconIco    = htmlspecialchars($assetBaseImg . '/favicon.ico', ENT_QUOTES, 'UTF-8');
+    $appleTouch    = htmlspecialchars($assetBaseImg . '/apple-touch-icon.png', ENT_QUOTES, 'UTF-8');
+    $android192    = htmlspecialchars($assetBaseImg . '/android-chrome-192x192.png', ENT_QUOTES, 'UTF-8');
+    $android512    = htmlspecialchars($assetBaseImg . '/android-chrome-512x512.png', ENT_QUOTES, 'UTF-8');
+    $manifestHref  = htmlspecialchars($assetBaseImg . '/site.webmanifest', ENT_QUOTES, 'UTF-8');
+    ?>
+
+    <!-- [INCLUSÃO] Favicon e Favibar padronizados -->
+    <link rel="icon" type="image/png" sizes="32x32" href="<?= $favicon32Href ?>">
+    <link rel="icon" type="image/png" sizes="16x16" href="<?= $favicon16Href ?>">
+    <link rel="shortcut icon" href="<?= $faviconIco ?>" type="image/x-icon">
+    <link rel="apple-touch-icon" sizes="180x180" href="<?= $appleTouch ?>">
+    <link rel="icon" type="image/png" sizes="192x192" href="<?= $android192 ?>">
+    <link rel="icon" type="image/png" sizes="512x512" href="<?= $android512 ?>">
+    <link rel="manifest" href="<?= $manifestHref ?>">
+
+    <!-- [INCLUSÃO] CSS institucional -->
+    <link rel="stylesheet" href="<?= $cssHref ?>">
 </head>
 
 <body class="sistema-bg">
@@ -108,12 +131,13 @@ if ($teste_selecionado === null && !empty($testes)) {
     <input type="hidden" name="r" value="testes">
 
     <!-- ÚNICO FILTRO: CÓDIGO DO TESTE -->
+    <!-- [AJUSTE] Comentário movido para fora do atributo para evitar HTML inválido -->
     <div class="form-row">
       <label for="cod_teste"><strong>Código do teste</strong></label><br>
       <select
         id="cod_teste"
         name="cod_teste"
-        onchange="this.form.submit()"  <!-- <<< AJUSTE CRÍTICO -->
+        onchange="this.form.submit()"
       >
         <?php foreach ($codigos_teste as $codigo): ?>
           <option value="<?= e($codigo) ?>" <?= $codSel === $codigo ? 'selected' : '' ?>>
@@ -122,7 +146,6 @@ if ($teste_selecionado === null && !empty($testes)) {
         <?php endforeach; ?>
       </select>
     </div>
-
 
     <?php if (!empty($teste_selecionado) && !empty($teste_selecionado['id_teste'])): ?>
 

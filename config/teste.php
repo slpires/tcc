@@ -1,1 +1,0 @@
-<?php echo "Teste de acesso à pasta /tcc/public funcionou!"; ?>

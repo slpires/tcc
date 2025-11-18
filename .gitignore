@@ -11,7 +11,7 @@ config/config.php
 
 # [LOGS] Bloqueio total de logs e arquivos temporários gerados pelo sistema
 logs/
-logs/.htaccess           # Só versionar logs/.htaccess se documentado em histórico
+logs/.htaccess           # Versão controlada por exceção explícita abaixo
 *.log
 *.tmp
 *.cache
@@ -23,7 +23,7 @@ db/*.bak
 db/*.sql.bak
 db/*.backup.sql
 
-# [TESTES E DOCUMENTAÇÃO] Arquivos/pastas de evidências temporárias e prints
+# [TESTES E DOCUMENTAÇÃO] Evidências temporárias e arquivos de apoio
 tests/tmp/
 docs/tmp/
 docs/prints/
@@ -36,27 +36,30 @@ Thumbs.db
 .vscode/
 *.code-workspace
 
-# [HOSPEDAGEM/FTP] Infra do servidor (fora do escopo do app)
+# [HOSPEDAGEM/FTP] Infra do servidor (fora do escopo da aplicação)
 .well-known/
 .ftpquota
 
 # [.HTACCESS]
 # Regra geral: ignorar .htaccess...
 .htaccess
-# ...mas EXCETUAR o .htaccess DA APLICAÇÃO (roteamento/segurança DEV=PRD)
+# ...excetuando os .htaccess da aplicação (roteamento/segurança DEV=PRD)
 !public/.htaccess
-# manter exceção já prevista
 !logs/.htaccess
-# (se o repositório for versionado a partir de /tcc/, a linha acima cobre;
-# se houver outra raiz, acrescentar a exceção com caminho relativo adequado.)
+# (se o repositório for versionado a partir de /tcc/, as exceções acima cobrem;
+# em outra raiz, ajustar caminhos relativos conforme necessário.)
 
 # [XAMPP] Ambiente local
 xampp/
 xamppfiles/
 
-# [PADRÃO TCC] PHP de desenvolvimento/teste
+# [PADRÃO TCC] PHP de desenvolvimento/teste e diagnóstico
 *index_*.php
 config/teste.php
+public/phpinfo_tcc.php
+public/teste_mysqli.php
+tests/diag_env.php
+public/error_log
 
 # ==============================================================================
 # Fim do .gitignore institucional padronizado – SLPIRES.COM | TCC UFF
