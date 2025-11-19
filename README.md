@@ -1,4 +1,4 @@
-# Sistema de Recuperação de Créditos em Folha – MVP (TCC)
+# Sistema de Recuperação de Créditos em Folha de Pagamento – MVP (TCC)
 
 ![Status](https://img.shields.io/badge/status-MVP%20estabilizado-brightgreen)
 ![GitHub](https://img.shields.io/badge/hosted%20on-GitHub-blue)
