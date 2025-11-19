@@ -20,7 +20,7 @@ require_once __DIR__ . '/../model/testes_service.php';
  */
 function testes_index(): void
 {
-    $titulo_pagina     = 'Módulo de Testes – Catálogo';
+    $titulo_pagina     = 'Catálogo de Casos de Testes';
     $mensagem_execucao = filter_input(INPUT_GET, 'msg', FILTER_SANITIZE_FULL_SPECIAL_CHARS) ?? '';
     $erro              = '';
     $teste_selecionado = null;

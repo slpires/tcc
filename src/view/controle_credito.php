@@ -113,7 +113,7 @@ function e(string $v): string
     <div class="app-logo">Slpires.COM</div>
     <div class="app-title">Controle de Créditos</div>
     <div class="app-desc" style="margin-bottom: 1.5em;">
-      Simule a geração e a amortização de créditos quando o líquido do mês ficar negativo (modo <strong>dry-run</strong>).
+      Simule a geração e a amortização de créditos a recuperar.
     </div>
 
     <?php if (!empty($__erros)): ?>
@@ -196,7 +196,7 @@ function e(string $v): string
       <h2 style="margin-top: 24px;">Diagnóstico</h2>
 
       <?php if (!empty($__saida['validacao']['ok'])): ?>
-        <div class="alert alert-ok">Simulação válida segundo as políticas do módulo.</div>
+        <div class="alert alert-ok">Simulação válida. Os dados informados atendem às regras do módulo.</div>
       <?php else: ?>
         <div class="alert alert-erro">Foram encontrados problemas de validação.</div>
       <?php endif; ?>

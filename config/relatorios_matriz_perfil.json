@@ -1,0 +1,16 @@
+{
+  "relatorios": {
+    "logs": {
+      "nome": "Relatórios de Logs Técnicos",
+      "perfis": ["ADMINISTRADOR"]
+    },
+    "creditos_consolidados": {
+      "nome": "Relatório de Créditos a Recuperar - consolidado",
+      "perfis": ["ADMINISTRADOR", "RH"]
+    },
+    "creditos_empregado": {
+      "nome": "Relatório de Créditos - empregado",
+      "perfis": ["ADMINISTRADOR", "EMPREGADO"]
+    }
+  }
+}

@@ -95,9 +95,9 @@ if (empty($perfis_validos)) {
     <?php include __DIR__ . '/componentes/mensagens.php'; ?>
 
     <div class="app-logo">Slpires.COM</div>
-    <div class="app-title">Bem-vindo ao Sistema</div>
+    <div class="app-title">Bem-vindo!</div>
     <div class="app-desc">
-      Selecione abaixo o perfil desejado para testar as funcionalidades:
+      Selecione abaixo o perfil desejado para explorar o MVP do sistema:
     </div>
 
     <!-- ==========================================================
