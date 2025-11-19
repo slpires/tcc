@@ -202,7 +202,7 @@ if ($routeRaw !== null && $routeRaw !== false && $routeRaw !== '') {
     <!-- Rodapé final (Sistema versão + contato) -->
     <div class="footer-version">
       <small>
-        Sistema versão <span id="sys-version">0.9.0</span> – Padrão SemVer
+        Sistema versão <span id="sys-version">1.0.0</span> – Padrão SemVer
         (<a href="https://semver.org/lang/pt-BR/" target="_blank">saiba mais</a>)<br>
         Dúvidas ou sugestões? Entre em <a href="https://olink.ai/slpires" target="_blank" rel="noopener noreferrer">contato</a>.
       </small>

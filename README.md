@@ -7,7 +7,7 @@
 ![Banco de Dados](https://img.shields.io/badge/MySQL-8.0-blue?logo=mysql)
 ![Plataforma](https://img.shields.io/badge/Plataforma-XAMPP-orange)
 ![Deploy](https://img.shields.io/badge/deploy-HostGator-blue)
-![SemVer](https://img.shields.io/badge/semver-v0.9.0-blue)
+![SemVer](https://img.shields.io/badge/semver-v1.0.0-blue)
 ![Roadmap](https://img.shields.io/badge/roadmap-active-success)
 ![Build](https://img.shields.io/badge/build-manual-lightgrey)
 

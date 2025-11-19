@@ -10,6 +10,20 @@ críticos com pouco tempo, poucos recursos e complexidade crescente.
 
 ---
 
+## [1.0.0] – 2025-11-18
+### Adicionado
+- Consolidação dos ajustes visuais finais do MVP.
+- Preparação da interface para apresentação e demonstração à banca.
+
+### Alterado
+- Atualização da versão pública exibida na landing page e no README para `v1.0.0`.
+- Polimento de textos institucionais e rótulos de botões nas views.
+
+### Corrigido
+- Pequenas inconsistências de alinhamento e espaçamento em páginas internas.
+
+---
+
 ## [0.9.0] – 2025-11-18
 ### Adicionado
 - Implementação integral do **Módulo Testes**, incluindo:
